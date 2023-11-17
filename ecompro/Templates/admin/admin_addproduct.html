@@ -1,0 +1,166 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+<div class="container">
+  <form method="post" action="{% url 'addproduct_perform' %}" enctype="multipart/form-data" onsubmit="return validateForm()">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="exampleFormControlInput1">Title</label>
+      <input type="text" class="form-control" id="title" name="name">
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="exampleInputEmail1">Category</label>
+      <select name="category" class="form-control" id="category">
+        {% for category in category %}
+          {% if category.active %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="exampleInputEmail1">Brand</label>
+      <select name="brand" class="form-control" id="brand">
+        {% for brand in brand %}
+          {% if brand.active %}
+            <option value="{{ brand.id }}">{{ brand.name }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="image1">Choose product image1</label>
+      <input type="file" class="form-control -file" id="image1" name="img1">
+      <span id="image1Error" class="text-danger"></span>
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="image2">Choose product image2</label>
+      <input type="file" class="form-control -file" id="image2" name="img2">
+      <span id="image2Error" class="text-danger"></span>
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="image3">Choose product image3</label>
+      <input type="file" class="form-control -file" id="image3" name="img3">
+      <span id="image3Error" class="text-danger"></span>
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="image4">Choose product image4</label>
+      <input type="file" class="form-control -file" id="image4" name="img4">
+      <span id="image4Error" class="text-danger"></span>
+    </div>
+
+    <br>
+    <div class="form-group">
+      <label for="exampleFormControlTextarea1">Description</label>
+      <textarea name="description" class="form-control" id="Pdescription" rows="3"></textarea>
+      <span id="descriptionError" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="inputZip">Price</label>
+      <input name="price" type="text" class="form-control" id="price">
+      <span id="priceError" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="Pstock">Stock</label>
+      <input type="text" class="form-control" name="stock" id="Pstock">
+      <span id="stockError" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary my-2">Submit</button>
+  </form>
+</div>
+
+<script>
+  function validateForm() {
+    var priceInput = document.getElementById('price');
+    var stockInput = document.getElementById('Pstock');
+    var descriptionInput = document.getElementById('Pdescription');
+    var image1Input = document.getElementById('image1');
+    var image2Input = document.getElementById('image2');
+    var image3Input = document.getElementById('image3');
+    var image4Input = document.getElementById('image4');
+    
+    var priceError = document.getElementById('priceError');
+    var stockError = document.getElementById('stockError');
+    var descriptionError = document.getElementById('descriptionError');
+    var image1Error = document.getElementById('image1Error');
+    var image2Error = document.getElementById('image2Error');
+    var image3Error = document.getElementById('image3Error');
+    var image4Error = document.getElementById('image4Error');
+
+    // Price validation
+    var priceValue = parseFloat(priceInput.value);
+    if (isNaN(priceValue) || priceValue < 0) {
+      priceError.textContent = 'Price must be a valid number greater than or equal to 0.';
+      return false;
+    } else {
+      priceError.textContent = '';
+    }
+
+    // Stock validation
+    var stockValue = parseInt(stockInput.value);
+    if (isNaN(stockValue) || stockValue < 0) {
+      stockError.textContent = 'Stock must be a valid integer greater than or equal to 0.';
+      return false;
+    } else {
+      stockError.textContent = '';
+    }
+
+    // Description validation
+    var trimmedDescription = descriptionInput.value.trim();
+    if (trimmedDescription === '') {
+      descriptionError.textContent = 'Description cannot be null.';
+      return false;
+    } else if (/^\s+$/.test(trimmedDescription)) {
+      // Check if the description contains only spaces
+      descriptionError.textContent = 'Description cannot be only spaces.';
+      return false;
+    } else {
+      descriptionError.textContent = '';
+    }
+
+    // Image validation
+    var validImageTypes = ['image/jpeg', 'image/png'];
+    var maxFileSize = 5 * 1024 * 1024; // 5 MB
+
+    function validateImage(input, errorSpan) {
+      if (input.files.length === 0) {
+        errorSpan.textContent = 'Please select an image.';
+        return false;
+      } else {
+        errorSpan.textContent = '';
+      }
+
+      var file = input.files[0];
+
+      if (!validImageTypes.includes(file.type)) {
+        errorSpan.textContent = 'Invalid image format. Please choose a JPEG or PNG file.';
+        return false;
+      } else {
+        errorSpan.textContent = '';
+      }
+
+      if (file.size > maxFileSize) {
+        errorSpan.textContent = 'File size exceeds the limit (5 MB).';
+        return false;
+      } else {
+        errorSpan.textContent = '';
+      }
+
+      return true;
+    }
+
+    if (!validateImage(image1Input, image1Error) || !validateImage(image2Input, image2Error) || !validateImage(image3Input, image3Error) || !validateImage(image4Input, image4Error)) {
+      return false;
+    }
+
+    return true;
+  }
+</script>
+
+{% endblock main %}

@@ -1,0 +1,38 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+<div class="container">
+    <h6><b>Edit your Category</b></h6>
+
+    <form method="post" action="{% url 'editcategory_action' %}" class="border border-dark rounded p-4" enctype="multipart/form-data" onsubmit="return validateForm()">
+        {% csrf_token %}
+        <input type="hidden" value="{{category.id}}" name="id">
+        <div class="form-group">
+            <label for="edit_brand">Edit category</label>
+            <input value="{{category.name}}" type="text" name="editcategory" class="form-control" id="editCategoryInput" required>
+            <span id="editCategoryError" class="text-danger"></span>
+        </div>
+
+        <div class="text-right mt-3">
+            <button type="submit" class="btn btn-success">Edit Brand</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function validateForm() {
+        var categoryInput = document.getElementById('editCategoryInput');
+        var categoryError = document.getElementById('editCategoryError');
+
+        // Category validation
+        if (categoryInput.value.trim() === '') {
+            categoryError.textContent = 'Category name cannot be empty.';
+            return false;
+        } else {
+            categoryError.textContent = '';
+        }
+
+        return true;
+    }
+</script>
+
+{% endblock main %}

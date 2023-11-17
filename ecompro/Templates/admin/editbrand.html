@@ -1,0 +1,38 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+<div class="container">
+    <h6><b>Edit your Brand</b></h6>
+
+
+    <form method="post" action="{% url 'editbrand_action' %}" class="border border-dark rounded p-4" enctype="multipart/form-data" onsubmit="return validateForm()">
+        {% csrf_token %}
+        <input type="hidden" value="{{ brand.id }}" name="id">
+        <div class="form-group">
+            <label for="edit_brand">Edit Brand</label>
+            <input value="{{ brand.name }}" type="text" name="editbrand" class="form-control" id="editbrandInput" required>
+            <span id="editbrandError" class="text-danger"></span>
+        </div>
+    
+        <div class="text-right mt-3">
+            <button type="submit" class="btn btn-success">Edit Brand</button>
+        </div>
+    </form>
+    
+</div>
+<script>
+    function validateForm() {
+        var categoryInput = document.getElementById('editbrandInput');
+        var categoryError = document.getElementById('editbrandError');
+
+        // Category validation
+        if (categoryInput.value.trim() === '') {
+            categoryError.textContent = 'Brand name cannot be empty.';
+            return false;
+        } else {
+            categoryError.textContent = '';
+        }
+
+        return true;
+    }
+</script>
+{% endblock main%}

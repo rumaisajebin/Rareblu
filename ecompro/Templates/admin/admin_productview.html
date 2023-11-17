@@ -1,0 +1,98 @@
+{% extends 'admin/admin.html' %}
+{% load static %}
+{% block main %}
+<div class="container">
+    <div class="card">
+        <div class="row">
+            <!-- Main Image -->
+            <div class="col-md-4">
+                <img src="{{ product.img1.url }}" class="card-img" alt="">
+            </div>
+
+            <!-- Product Details -->
+            <div class="col-md-8">
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><b>Product Name</b></td>
+                                <td><b>{{ product.Product_Name }}</b></td>
+                            </tr>
+                            <tr>
+                                <td>Brand</td>
+                                <td>{{ product.Brand }}</td>
+                            </tr>
+                            <tr>
+                                <td>Category</td>
+                                <td>{{ product.Category }}</td>
+                            </tr>
+                            <tr>
+                                <td>Price</td>
+                                <td>
+                                    {% if product.price >= 0 %}
+                                    {{ product.price }}
+                                    {% else %}
+                                    <span class="text-danger">Invalid Price</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Stock</td>
+                                <td>
+                                    {% if product.Stock >= 0 %}
+                                    {{ product.Stock }}
+                                    {% else %}
+                                    <span class="text-danger">Invalid Stock</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Description</td>
+                                <td>{{ product.Description }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <td>
+                        <a href="{% url 'edit_product' product.id %}" class="btn btn-danger">Edit</a>
+                        <a href="{% url 'productdelete' product.id %}" class="btn btn-danger">Delete</a>
+
+                        {% if product.active %}
+                        <a href="{% url 'productactive' product.id %}" class="btn btn-success">Active</a>
+                        {% else %}
+                        <a href="{% url 'productactive' product.id %}" class="btn btn-danger">Block</a>
+                        {% endif %}
+                    </td>
+                </div>
+            </div>
+
+            <!-- Small Images Below Main Image -->
+            <div class="col-md-12 mt-3">
+                <div class="row">
+                    <div class="col-md-3">
+                        <img src="{{ product.img2.url }}" class="img-thumbnail" alt="">
+                    </div>
+                    <div class="col-md-3">
+                        <img src="{{ product.img3.url }}" class="img-thumbnail" alt="">
+                    </div>
+                    <div class="col-md-3">
+                        <img src="{{ product.img4.url }}" class="img-thumbnail" alt="">
+                    </div>
+                    <!-- Add more small images here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function validateInput2(stocks) {
+        var validationMessage3 = document.getElementById('validationMessage3');
+        if (stocks.value < 0) {
+            stocks.setCustomValidity('Value must not be less than 0');
+            validationMessage3.textContent = 'Value for stock must not be less than 0';
+        } else {
+            stocks.setCustomValidity('');
+            validationMessage3.textContent = '';
+        }
+    }
+</script>
+{% endblock main%}

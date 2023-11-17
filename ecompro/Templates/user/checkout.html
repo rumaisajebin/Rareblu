@@ -1,0 +1,164 @@
+{% extends 'user/base.html' %}
+{% block main %}
+<div class="container my-3">
+  <div class="row">
+    <div class="col-md-4 order-md-2 mb-4">
+      <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Your cart</span>
+        <span class="badge badge-secondary badge-pill">3</span>
+      </h4>
+      <ul class="list-group mb-3">
+
+        <form class="card p-2">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Promo code">
+            <div class="input-group-append">
+              <button type="submit" class="btn btn-secondary">Redeem</button>
+            </div>
+          </div>
+        </form>
+        <hr>
+        {% for item in cart %}
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 class="my-0">{{ item.product.Product_Name }}</h6>
+            <small class="text-muted">{{ item.quantity }}</small>
+          </div>
+
+          <span class="text-muted">₹ {{ item.total_price }}</span>
+        </li>
+        {% endfor%}
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Total Cost </span>
+          <strong> ₹ {{ cart.get_total_cost }} </strong>
+        </li>
+      </ul>
+
+
+      <h4 class="mb-3">Payment</h4>
+     
+      <div class="d-block my-3">
+        <div class="custom-control custom-radio">
+          <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked="" required="">
+          <label class="custom-control-label" for="credit">Cash on Delivery</label>
+        </div>
+        <div class="custom-control custom-radio">
+          <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required="">
+          <label class="custom-control-label" for="debit">Debit card</label>
+        </div>
+        <div class="custom-control custom-radio">
+          <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required="">
+          <label class="custom-control-label" for="paypal">Paypal</label>
+        </div>
+      </div>
+      <hr class="mb-4">
+      <a href="{% url 'success' %}" class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</a>
+
+    </div>
+    <div class="col-md-8 order-md-1">
+      <h4 class="mb-3">Billing address</h4>
+      {% for address in user_address %}
+      <address>
+        {{ address.user.id }}
+        {{ address.full_name }}
+        {{ address.address1 }}
+        {{ address.address2 }}
+        {{ address.city }}
+        {{ address.phone_1 }}
+        {{ address.phone_2 }}
+        {{ address.pincode }}
+      </address>
+      {% endfor %}
+
+      <form method="post" action="{% url 'addaddress_perform' %}">
+
+        {% csrf_token %}
+
+        <!-- Error messages in this element -->
+
+        <div class="row g-3">
+          <div class="col-md-7">
+            <label for="custName" class="form-label">Customer Name</label>
+            <input type="text" class="form-control" name="fullName" id="custName" required>
+            <div class="invalid-feedback">
+              Please enter a valid customer name.
+            </div>
+          </div>
+
+          <!-- Add similar styling for the rest of the form fields -->
+          <div class="col-12">
+            <label for="address" class="form-label">Address</label>
+            <input type="text" class="form-control" id="address" name="address1" required>
+            <div class="invalid-feedback">
+              Please enter your shipping address.
+            </div>
+          </div>
+          <div class="col-12">
+            <label for="address" class="form-label">Address</label>
+            <input type="text" class="form-control" id="address" name="address2" required>
+            <div class="invalid-feedback">
+              Please enter your shipping address.
+            </div>
+          </div>
+          <div class="col-12">
+            <label for="address2" class="form-label">Phone Number</label>
+            <input type="text" class="form-control" id="custAdd2" name="phonenumber1">
+          </div>
+
+          <div class="col-12">
+            <label for="address2" class="form-label">Phone Number</label>
+            <input type="text" class="form-control" id="custAdd2" name="phonenumber2">
+          </div>
+
+          <div class="col-mod-5">
+            <label for="city" class="form-label">State</label>
+            <select class="form-select" name="city" id="city" required>
+              <option value="state">Choose..</option>
+              <option>kerala</option>
+            </select>
+            <div class="invalid-feedback">
+              Please select a valid State.
+            </div>
+          </div>
+          <!-- ... -->
+
+          <div class="col-md-3">
+            <label for="Pincode" class="form-label">Pincode</label>
+            <input type="text" class="form-control" id="Pincode" name="pincode" required>
+            <div class="invalid-feedback">
+              Zip code required.
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-4">
+        <button id="submit" class="btn btn-primary w-100 fw-bold" data-secret="{{ client_secret }}">Add</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+</div>
+<script>
+  $(document).ready(function () {
+    // Handle form submission
+    $("form").submit(function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Check the selected payment method
+      var paymentMethod = $("input[name='paymentMethod']:checked").val();
+
+      // Redirect based on the payment method
+      if (paymentMethod === "credit") {
+        // Redirect to the credit card payment page
+        window.location.href = "{% url 'success2' %}";
+      }  else {
+        // Default redirect to the success page
+        window.location.href = "{% url 'success' %}";
+      }
+    });
+  });
+</script>
+{% endblock main %}

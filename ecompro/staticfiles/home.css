@@ -1,0 +1,91 @@
+*{
+    max-width: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.8;
+    color: #212529;
+    text-align: left;
+    background-color: #fff;
+}
+
+.navbar {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: 0rem 3rem;
+}
+
+/* .nav-1{
+    background-color: #FBEAEB;
+    display: flex;
+    justify-content: space-between;
+    padding: 0rem 3rem;
+    margin-top: .3cm;
+}
+
+.nav-1 a{
+    color: #000;
+} */
+/* Default styles for the navigation bar */
+.nav-1 {
+    background-color: #FBEAEB;
+    display: flex;
+    justify-content: space-between;
+    padding: 0rem 3rem;
+    margin-top: .3cm;
+}
+
+.nav-1 a {
+    color: #000;
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 425px) {
+    .navbar {
+        flex-direction: column; /* Stack links vertically */
+        align-items: center; /* Center-align links */
+        text-align: center; /* Center-align text within links */
+        padding: 1rem; /* Adjust padding for spacing */
+    }
+
+    .navbar{
+        margin: 0.5rem 0; /* Add spacing between links */
+    }
+}
+
+.card-1{
+    margin: auto;
+    padding-top:20px ;
+    /* background-color: bisque; */
+}
+.new{
+    width: 100%;
+    height: 395px;
+    background-color: aqua;
+    padding: 0rem 3rem;
+}
+
+
+  footer{
+      /* font-family: 'Kavoon', serif; */
+      background-color: #2F3C7E;
+      display: flexbox;
+      color: #FBEAEB;
+      
+  }
+
+  .foot-list a{
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+  }

@@ -1,0 +1,60 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
+  Add Brand
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Add Brand</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'addbrand' %}" method="post">
+          {%csrf_token%}
+          <div class="mb-3">
+            <label for="brand-name" class="form-label">Brand name</label>
+            <input type="text" class="form-control" id="brand-name" name="brand" required>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <input type="submit" value="Add Brand" class="btn btn-primary">
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="input-group mb-3">
+  <table class="table text-center">
+    <tr>
+      <th>Sl No</th>
+      <th>Brand Name</th>
+    </tr>
+    {% for b in brands %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ b.name }}</td>
+      <td><a href="{% url 'editbrand' b.id %}" type="button" class="btn btn-primary">Edit</a>
+
+        {% if b.active %}
+        <a href="{% url 'brandactive' b.id %}"  class="btn btn-success">Active</a>
+        {% else %}
+        <a href="{% url 'brandactive' b.id %}"  class="btn btn-danger">Block</a>
+        {% endif %}
+
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock main%}

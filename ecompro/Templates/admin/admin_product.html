@@ -1,0 +1,53 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+
+
+
+<table class="table">
+  
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Image</th>
+            <th>Action</th>
+            <th>Stock</th>
+            <th>View</th>
+        </tr>
+    </thead>
+    <tbody>
+      
+        {% for product in Products %}
+          
+        <tr>
+            <td>{{product.Product_Name}}</td>
+            <td>{{product.Category.name}}</td>
+            <td>{{product.Brand.name}}</td>
+            <td>
+                {% if product.img1 %}
+                <img src="{{ product.img1.url }}" alt="{{ product.Product_Name }} Image" style="width: auto; height: 50px; ">
+                {% else %}
+                <img src='' alt="{{ product.Product_Name }} Image" style="width: auto; height: 50px; ">
+                {% endif %}
+            </td>
+            <td>{% if product.active %}
+                <p>Active</p>
+                {% else %}
+                <p>Block</p>
+                {% endif%}
+            </td> 
+            <td> 
+                {{product.Stock}}
+            </td>
+            <td>
+                 <a href="{% url 'admin_productview' product.id %}" >view </a>   
+            </td>
+        </tr>
+        
+        {% endfor %}    
+    </tbody>
+</table>
+<p><a href="{% url 'admin_addproduct' %}"class=" btn btn-success">Add Product</a></p>
+
+{% endblock main%}
