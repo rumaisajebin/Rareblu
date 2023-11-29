@@ -1,17 +1,17 @@
 from datetime import datetime
 from django.shortcuts import render,redirect
-from django.http import HttpRequest,HttpResponse,HttpResponseRedirect
-from django.contrib.auth import authenticate, login
+from django.http import HttpResponse, HttpResponseForbidden,HttpResponseRedirect
+from django.contrib.auth import authenticate, login,logout
 from django.contrib import messages
-from django.contrib.auth.models import User,auth
+from django.contrib.auth.models import User
 from django.views.decorators.cache import never_cache
-from django.conf import settings
 import pyotp
 from .otp import send_otp
-from django.template import RequestContext
-from django.contrib.auth.forms import AuthenticationForm
 from admin_side.models import *
-
+from django.contrib.auth.decorators import login_required
+from .models import *
+from django.shortcuts import get_object_or_404
+from cart.models import *
 
 def otp_page(request):
     return render(request,'emailotp.html')
@@ -51,7 +51,9 @@ def clear_session(request):
     for key in key:
         if key in request.session:
             del request.session[key]
-            
+
+
+
 @never_cache         
 def sign_up(request):
     if request.method =='POST':
@@ -115,6 +117,66 @@ def log_in_perform(request):
         return HttpResponse("method not allowed")
 
 
-def log_out(request):
-    return redirect('log_in')
 
+def log_out(request):
+    logout(request)
+    return redirect('home')
+
+
+
+def profile(request):
+    order = Order.objects.filter(user=request.user)
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("You must be logged in to view this page.")
+
+    try:
+        u_profile = User_Profile.objects.get(user=request.user)
+    except User_Profile.DoesNotExist:
+        u_profile = User_Profile.objects.create(user=request.user)
+
+    return render(request, 'user/user_profile.html', {'u_profile': u_profile,'order':order})
+
+
+
+
+@login_required
+def editprofile(request):
+    u_profile = get_object_or_404(User_Profile, user=request.user)
+
+    if request.method == 'POST':
+        profile_photo = request.FILES.get('profilepic')
+        address = request.POST.get('address')
+        phone_number = request.POST.get('phonenumber')
+
+        if profile_photo:
+            u_profile.profile_photo = profile_photo
+
+        u_profile.address = address
+        u_profile.PhoneNumber = phone_number
+        u_profile.save()
+
+        return redirect('profile')  # Redirect to the profile view after successful update
+
+    return render(request, 'user/edit_profile.html', {'u_profile': u_profile})
+
+
+@login_required
+def edit_profile_action(request):
+    u_profile = get_object_or_404(User_Profile, user=request.user)
+
+    if request.method == 'POST':
+        profile_photo = request.FILES.get('profilepic')
+        address = request.POST.get('address')
+        phone_number = request.POST.get('phonenumber')
+        
+        if profile_photo:
+            u_profile.profile_photo = profile_photo
+
+        u_profile.address = address
+        u_profile.PhoneNumber = phone_number
+        u_profile.save()
+
+    return render('profile')
+
+
+    

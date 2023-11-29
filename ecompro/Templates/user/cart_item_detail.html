@@ -1,28 +1,15 @@
 {% if item %}
-
-<div class="bg-white rounded shadow-sm border d-flex justify-content-between p-3 align-items-center my-1"
-    id="cart-item-{{ item.product.id }}">
-    <img src="{% if item.product.image %}
-    {{ item.product.image }}
-    {% else %}
-    {{ item.product.img1.url }}
-    {% endif %}
-    " alt="Product-image" class="img-fluid" style="height: 100px">
-    
+<div class="bg-white rounded shadow-sm border d-flex justify-content-between p-3 align-items-center my-1" id="cart-item-{{ item.product.id }}">
+    <img src="{{ item.product.img1.url }}" alt="Product-image" class="img-fluid" style="height: 100px">
     <div>
         <p class="fw-bold m-0">{{ item.product.Product_Name }}</p>
-    </div>
-    
         <div class="d-flex align-items-center p-2">
-            
-            <a href="{% url 'change_quantity' item.product.id %}?action=decrease" class=" btn btn-light" >-</a>
+            <a href="{% url 'update_cart' item.product.id 'decrement' %}" class="btn btn-outline-dark p-1 px-3">-</a>
             <p class="fw-bold m-0 px-2 p-1">{{ item.quantity }}</p>
-            <a href="{% url 'change_quantity' item.product.id %}?action=increase" class="btn btn-light">+</a>
-
+            <a href="{% url 'update_cart' item.product.id 'increment' %}" class="btn btn-outline-dark p-1 px-3">+</a>
         </div>
-    <p class="fw-bold text-secondary m-0">₹ {{ item.total_price }}</p>
-    
+    </div>
+    <p class="fw-bold text-secondary m-0">${{ item.total_price }}</p>
 
-    <a href="{% url 'remove_from_cart' item.product.id %}" class="btn-light">remove</a>
 </div>
 {% endif %}

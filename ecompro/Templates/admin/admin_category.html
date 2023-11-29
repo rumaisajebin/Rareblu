@@ -20,16 +20,6 @@
                     <div class="modal-body">
                         <form action="{% url 'addcategory' %}" method="post">
                             {%csrf_token%}
-                            {% if messages %}
-                            <ul class="messages">
-                                {% for message in messages %}
-                                <li>{{ message }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-
-
-
                             <div class="mb-3">
                                 <label for="category-name" class="form-label">Category name</label>
                                 <input type="text" class="form-control" id="category-name" name="category" required>

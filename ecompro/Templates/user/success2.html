@@ -1,1 +1,19 @@
-<h1>best of luck</h1>
+{% extends 'user/base.html' %}
+
+{% block main %}
+
+<div class="container-fluid">
+    <div class="row justify-content-center align-items-center" style="height: 55vh;">
+        <div class="col-md-6" style="width: 300px; height: 600px;">
+            <div class="card border border-success" >
+                <div class="card-body">
+                    <h5 class="card-title">Order Success</h5>
+                    <p class="card-text">Your order has been placed successfully.</p>
+                    <!-- Additional content or information can be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock main %}

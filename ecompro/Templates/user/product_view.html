@@ -1,0 +1,96 @@
+{% extends 'user/base.html' %}
+{% load static %}
+
+{% block main %}
+<div class="container">
+    <div class="row align-items-center">
+        <!-- Main Image -->
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{{ product.img1.url }}" class="card-img main-img" alt="Main Image" style="height: 420px; width: 430px;">
+                <hr>
+                <div class="row">
+                    {% for image_field in image_fields %}
+                        <div class="col-md-3">
+                            <img src="{{ image_field.url }}" alt="Product Image"
+                                data-main-img="{{ image_field.url }}" class="thumbnail-img" style="width: 100%; cursor: pointer;">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+            <!-- Product Details -->
+            <div class="col-md-8 my-5">
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><b>Product Name</b></td>
+                                <td><b>{{ product.Product_Name }}</b></td>
+                            </tr>
+                            <tr>
+                                <td><b>Brand</b></td>
+                                <td>{{ product.Brand }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Category</b></td>
+                                <td>{{ product.Category }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Price</b></td>
+                                <td>
+                                    {% if product.price >= 0 %}
+                                        {{ product.price }}
+                                    {% else %}
+                                        <span class="text-danger">Invalid Price</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Stock</b></td>
+                                <td>
+                                    {% if product.Stock >= 0 %}
+                                        In Stock
+                                    {% else %}
+                                        <span class="text-danger">Out of Stock</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Description</b></td>
+                                <td>{{ product.Description }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <td>
+                        <a class="btn btn-success mt-2" href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
+                        <a href="{% url 'checkout' %}" class="btn btn-success mt-2"> Buy Now </a>
+                    </td>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@sai1253/driftjs@1.0.0/dist/Drift.min.js"></script>
+    <script>
+        const thumbnails = document.querySelectorAll('.thumbnail-img');
+        const mainImg = document.querySelector('.main-img');
+    
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', () => {
+                const newImgSrc = thumbnail.getAttribute('data-main-img');
+                mainImg.src = newImgSrc;
+                // Activate Drift for the updated main image
+                new Drift(mainImg, {
+                    paneContainer: document.querySelector('.card'),
+                    inlinePane: 900,
+                    inlineOffsetY: -85,
+                    containInline: true,
+                    hoverBoundingBox: true
+                });
+            });
+        });
+    </script>
+{% endblock main %}
+
+

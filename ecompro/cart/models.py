@@ -1,5 +1,8 @@
+from django.utils import timezone
 from django.db import models    
 from django.contrib.auth.models import User
+from admin_side.models import Product
+from django.conf import settings
 
 # Create your models here.
 
@@ -9,8 +12,8 @@ class Address(models.Model):
     address1 = models.CharField(max_length=250, null=True, blank=True)
     address2 = models.CharField(max_length=250, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
-    phone_1 = models.CharField(max_length=10, null=True, blank=True)
-    phone_2 = models.CharField(max_length=10, null=True, blank=True)
+    phone_1 = models.CharField( null=True, blank=True)
+    phone_2 = models.CharField( null=True, blank=True)
     pincode = models.CharField(max_length=6, null=True, blank=True)
     
     class Meta:
@@ -19,3 +22,55 @@ class Address(models.Model):
     def _str_(self):
         return f"{self.full_name}'s Address"
     
+
+class CartItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
+    quantity = models.IntegerField(default=1)
+    
+    def __str__(self):
+        return self.product.Product_Name
+    
+    def total_price(self):
+        return self.product.price * self.quantity
+    
+    
+  
+class Order(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='order_user', null=True,blank=True)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated = models.DateTimeField(auto_now=True, null=True, blank=True)
+    total_paid = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    billing_status = models.CharField(max_length=10,default=total_paid )
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,null=True,blank=True)
+    # New field for order status
+    ORDER_STATUS_CHOICES = [
+        ('confirmed', 'Order Confirmed'),
+        ('shipped', 'Shipped'),
+        ('out_for_delivery', 'Out for Delivery'),
+        ('delivered', 'Delivered'),
+        # Add more statuses as needed
+    ]
+
+    status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='confirmed')
+
+    class Meta:
+        ordering = ('-created',)
+
+    def str(self):
+        return f"{self.created} - {self.status}"
+
+    
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order,related_name='items',on_delete=models.CASCADE,blank=True,null=True)
+    product = models.ForeignKey(Product,related_name='order_items',on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
+    
+    def str(self):
+        return str(self.id)
+
+    class MaxValidator:
+        pass

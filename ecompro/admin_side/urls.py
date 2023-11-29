@@ -28,5 +28,20 @@ urlpatterns=[
     path('editbrand_action',views.editbrand_action,name='editbrand_action'),
     path('brandactive/<int:id>/',views.brandactive,name='brandactive'),
     
+    path('coupon',views.coupon,name='coupon'),
+    path('addcoupon',views.addcoupon,name='addcoupon'),
+    path('edit_coupon/<int:id>/',views.edit_coupon,name='edit_coupon'),
+    path('edit_couponaction',views.edit_couponaction,name='edit_couponaction'),
+    path('couponactive',views.couponactive,name='couponactive'),
+    
+    
+    path('customer',views.customer,name='customer'),
+    path('customeractive/<int:id>/',views.customeractive,name='customeractive'),
+    
+    path('order',views.order,name='order'),
+    
+
+    
     # path('search',views.search,name='search'),
+    
     ]

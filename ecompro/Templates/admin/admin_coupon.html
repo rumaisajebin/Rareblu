@@ -1,0 +1,78 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
+  Add Coupon
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Add Coupon</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'addcoupon' %}" method="post">
+          {%csrf_token%}
+          <div class="mb-3">
+            <label for="coupon-code" class="form-label">Coupon Code</label>
+            <input type="text" class="form-control" id="coupon-code" name="coupon-code" required>
+          </div>
+          <div class="mb-3">
+            <label for="expiry_date" class="form-label">Expiry Date</label>
+            <input type="date" class="form-control" id="expiry_date" name="expiry_date" required>
+        </div>
+        
+          <div class="mb-3">
+            <label for="discount_price" class="form-label">Discount Price</label>
+            <input type="text" class="form-control" id="discount_price" name="discount_price" required>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <input type="submit" value="Add Coupon" class="btn btn-primary">
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="input-group mb-3">
+  <table class="table text-center">
+    <tr>
+      <th>Sl No</th>
+      <th>Coupon Name</th>
+      <th>Expiry Date</th>
+      <th>Discount Price</th>
+    </tr>
+    {% for cou in coupon %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ cou.coupon_code }}</td>
+      <td>{{ cou.expiry_date }}</td>
+      <td>{{ cou.discount_price }}</td>
+      <td><a href="{% url 'edit_coupon' cou.id %}" type="button" class="btn btn-primary">Edit</a>
+
+        <!-- admin_coupon.html -->
+
+    {% if coupon.active %}
+        <p>Status: <span class="text-success">Active</span></p>
+    {% else %}
+        <p>Status: <span class="text-danger">Expired</span></p>
+    {% endif %}
+
+
+
+
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock main%}

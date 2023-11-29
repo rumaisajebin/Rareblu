@@ -20,16 +20,18 @@
 
             </select>
         </div>
-
         <div class="form-group">
             <label for="exampleInputEmail1">Brand</label>
-            <select name="brand" class="form-control" id="category">
-                <option value="{{product.Brand.id}}" selected>{{ product.Brand.name }}</option>
-                {% for brand in brand %}
-                <option value="{{ brand.id }}">{{ brand.name }}</option>
+            <select name="brand" class="form-control" id="brand">
+                <option value="{{ product.Brand.id }}" selected>{{ product.Brand.name }}</option>
+                {% for brand_option in all_brands %}
+                    {% if brand_option.id != product.Brand.id %}
+                        <option value="{{ brand_option.id }}">{{ brand_option.name }}</option>
+                    {% endif %}
                 {% endfor %}
-
             </select>
+        </div>
+        
         </div>
 
         <div class="form-group">

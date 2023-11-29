@@ -1,0 +1,74 @@
+{% extends 'user/base.html' %}
+{% block main %}
+<div class="container">
+   
+    <div class="text-center">
+        <h3 class="text-muted">User Profile</h3>
+    </div>
+    <hr>
+        {% if u_profile %}
+    <div class="card-group">
+        <div class="card">
+            {% if u_profile.profile_photo %}
+            <img src="{{ u_profile.profile_photo.url }}" alt="Profile Photo" class="card-img rounded-rectangle" >
+            {% else %}
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+            class="rounded-circle img-fluid" style="width: 150px;">
+            {% endif %}
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card-text">
+                <p><strong>Username:</strong> {{ u_profile.user.username }}</p>
+                <p><strong>Address:</strong> {{ u_profile.address }}</p>
+                <p><strong>Phone Number:</strong> {{ u_profile.PhoneNumber }}</p>
+                <a href="{% url 'editprofile' %}" class="btn btn-light border border-3">edit</a>
+                <a href="{% url 'editprofile' %}" class="btn btn-light border border-3">Change Password</a>
+            </div>
+        </div>
+    </div>
+
+    <hr><hr>
+    <div class="text-center">
+        <h5 class="text-decoration-underline"><strong>Orders</strong></h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="table-light">
+                <tr>
+                    <th>Sl.No</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Cancel</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ord in order %}
+                <tr>
+                    <td>{{ ord.order.id}}</td>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ ord.product }}</td>
+                    <td>{{ ord.quantity }}</td>
+                    <td>{{ ord.price }}</td>
+                    <td>{{ ord.status }}</td>
+                    <td><a href="#" class="btn">Cancel</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    {% else %}
+    <p>No profile found.</p>
+    {% endif %}
+</div>
+<!-- {% for order in order %}
+       
+            <p>Order ID: {{ order.id }}</p>
+            <p>Status: {{ order.status }}</p>
+            <p>Total Paid: {{ order.total_paid }}</p>
+            <p>Created: {{ order.created }}</p>
+    {% endfor %} -->
+{% endblock main %}

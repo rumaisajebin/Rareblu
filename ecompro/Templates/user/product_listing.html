@@ -1,0 +1,80 @@
+{% extends 'user/base.html' %}
+{% block main %}
+
+<div class="container-fluid">
+    <div class="row">
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="container-fluid d-flex justify-content-center">
+            <div class="alert alert-danger alert-dismissible fade show text-center w-50" role="alert">
+                <strong>Error! </strong>{{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <!-- Filter Section -->
+        <div class="col-md-3">
+            <form method="post" action="{% url 'price_filter' %}" hx-post="{% url 'price_filter' %}"
+                hx-target="#product-listing">
+                {% csrf_token %}
+                <div class="border p-3 mt-3">
+                    <div class="mb-3">
+                        <label for="min_price">Min Price:</label>
+                        <input type="number" name="min_price" id="min_price" class="form-control" placeholder="Min" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="max_price">Max Price:</label>
+                        <input type="number" name="max_price" id="max_price" class="form-control" placeholder="Max" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="category">Category:</label>
+                        <select name="category" class="form-control" id="category">
+                            <option value="" selected disabled>Select Category</option>
+                            {% for cat in category %}
+                            {% if cat.active %}
+                            <option value="{{ cat.id }}">{{ cat.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="brand">Brand</label>
+                        <select name="brand" class="form-control" id="brand">
+                            <option value="" selected disabled>Select Brand</option>
+                            {% for br in brand %}
+                            <option value="{{ br.id }}">{{ br.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Product Display Section -->
+
+
+
+        <div class="col-md-9" id="product-listing" hx-get="{% url 'price_filter' %}">
+
+            {% include 'user/filtered_product_list.html' %}
+
+        </div>
+
+    </div>
+</div>
+<script>
+
+    var double_click_button = document.getElementById('double-click-button');
+    double_click_button.addEventListener('dblclick', function () {
+        window.location.href = '/product_view/' + container_id;
+    });
+</script>
+{% endblock main %}

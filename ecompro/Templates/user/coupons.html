@@ -1,0 +1,13 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+<h1>Available Coupons</h1>
+<ul>
+    {% for coupon in active_coupons %}
+    <li>
+        <strong>Coupon Code:</strong> {{ coupon.coupon_code }}<br>
+        <strong>Discount:</strong> {{ coupon.discount_price }}%<br>
+        <!-- Add other coupon details as needed -->
+    </li>
+    {% endfor %}
+</ul>
+{% endblock main%}

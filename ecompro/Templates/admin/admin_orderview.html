@@ -1,0 +1,44 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+
+
+<div class="input-group mb-3">
+  <!-- <table class="table text-center">
+    <tr>
+      <th>Sl No</th>
+      <th>Order </th>
+   
+    </tr>
+    {% for ord in order %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ ord.user }}</td>
+    
+    {% endfor %}
+  </table> -->
+  
+  <table class="table text-center">
+    <tr>
+      <th>Sl No</th>
+      <th>oderitem </th>
+      <th>oderitem-product </th>
+      <th>product quantity</th>
+      <th>product price </th>
+   
+    </tr>
+    {% for ord in oderitem %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ ord.order.user }}</td>
+      <td>{{ ord.product.Product_Name }}</td>
+      <td>{{ ord.quantity }}</td>
+      <td>{{ ord.price }}</td>
+
+
+
+    
+    {% endfor %}
+  </table>
+
+</div>
+{% endblock main%}

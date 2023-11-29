@@ -3,12 +3,14 @@
 <div class="container">
     <h6><b>Edit your Category</b></h6>
 
-    <form method="post" action="{% url 'editcategory_action' %}" class="border border-dark rounded p-4" enctype="multipart/form-data" onsubmit="return validateForm()">
+    <form method="post" action="{% url 'editcategory_action' %}" class="border border-dark rounded p-4"
+        enctype="multipart/form-data" onsubmit="return validateForm()">
         {% csrf_token %}
         <input type="hidden" value="{{category.id}}" name="id">
         <div class="form-group">
             <label for="edit_brand">Edit category</label>
-            <input value="{{category.name}}" type="text" name="editcategory" class="form-control" id="editCategoryInput" required>
+            <input value="{{category.name}}" type="text" name="editcategory" class="form-control" id="editCategoryInput"
+                required>
             <span id="editCategoryError" class="text-danger"></span>
         </div>
 

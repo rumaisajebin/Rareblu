@@ -1,0 +1,70 @@
+{% extends 'user/base.html' %}
+{% block main %}
+<div class="container my-3">
+  
+<form method="post" action="{% url 'addaddress_perform' %}">
+
+
+  {% csrf_token %}
+
+  <div class="row g-3">
+    <div class="col-md-7">
+      <label for="custName" class="form-label">Customer Name</label>
+      <input type="text" class="form-control" name="fullName" id="custName" required>
+      <div class="invalid-feedback">
+        Please enter a valid customer name.
+      </div>
+    </div>
+
+
+    <div class="col-12">
+      <label for="address" class="form-label">Address</label>
+      <input type="text" class="form-control" id="address" name="address1" required>
+      <div class="invalid-feedback">
+        Please enter your shipping address.
+      </div>
+    </div>
+    <div class="col-12">
+      <label for="address" class="form-label">Address</label>
+      <input type="text" class="form-control" id="address" name="address2" required>
+      <div class="invalid-feedback">
+        Please enter your shipping address.
+      </div>
+    </div>
+    <div class="col-12">
+      <label for="address2" class="form-label">Phone Number</label>
+      <input type="text" class="form-control" id="custAdd2" name="phonenumber1">
+    </div>
+
+    <div class="col-12">
+      <label for="address2" class="form-label">Phone Number</label>
+      <input type="text" class="form-control" id="custAdd2" name="phonenumber2">
+    </div>
+
+    <div class="col-mod-5">
+      <label for="city" class="form-label">State</label>
+      <select class="form-select" name="city" id="city" required>
+        <option value="state">Choose..</option>
+        <option>kerala</option>
+      </select>
+      <div class="invalid-feedback">
+        Please select a valid State.
+      </div>
+    </div>
+
+
+    <div class="col-md-3">
+      <label for="Pincode" class="form-label">Pincode</label>
+      <input type="text" class="form-control" id="Pincode" name="pincode" required>
+      <div class="invalid-feedback">
+        Zip code required.
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-4">
+  <button id="submit" class="btn btn-primary w-100 fw-bold" >Add</button>
+
+</form>
+  </div>
+{% endblock main %}

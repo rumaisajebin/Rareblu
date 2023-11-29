@@ -47,9 +47,9 @@
       <td><a href="{% url 'editbrand' b.id %}" type="button" class="btn btn-primary">Edit</a>
 
         {% if b.active %}
-        <a href="{% url 'brandactive' b.id %}"  class="btn btn-success">Active</a>
+        <a href="{% url 'brandactive' b.id %}" class="btn btn-success">Active</a>
         {% else %}
-        <a href="{% url 'brandactive' b.id %}"  class="btn btn-danger">Block</a>
+        <a href="{% url 'brandactive' b.id %}" class="btn btn-danger">Block</a>
         {% endif %}
 
       </td>

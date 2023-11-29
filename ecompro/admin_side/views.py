@@ -1,18 +1,26 @@
+from asyncio import exceptions
+from datetime import timezone
+import datetime
 from pyexpat.errors import messages
-from django.shortcuts import render,redirect
-from admin_side.models import Product, Category, Brand
+from django.shortcuts import get_object_or_404, render,redirect,get_list_or_404
+from admin_side.models import Product, Category, Brand ,Coupon
 from django.urls import reverse
 from django.db.models import Q
-# Create your views here.
+from django.contrib.auth.models import User
+from cart.models import *
+# Create your views here..
 
 
 
 def admin_home(request):
     return render(request,'admin/admin_dashboard.html',{'title':'Dashboard'})
 
+
+
 def category(request):
     cat = Category.objects.all()
     return render(request,'admin/admin_category.html', {'title':'Categories','cat': cat})
+
 
 def categoryactive(request,id):
     category=Category.objects.get(id=id)
@@ -24,9 +32,11 @@ def categoryactive(request,id):
     category.save()
     return redirect('category')
 
+
 def editcategory(request,id):
     category = Category.objects.get(id=id)
     return render(request,'admin/edit_category.html',{'category':category})
+
 
 def editcategory_action(request):
     if request.method == 'POST':
@@ -42,7 +52,6 @@ def editcategory_action(request):
             category.save()
             return redirect ('category')
 
-from django.shortcuts import redirect
 
 def addcategory(request):
     if request.method == 'POST':
@@ -52,8 +61,7 @@ def addcategory(request):
     else:
         return redirect('category') 
 
-    
-
+  
 
 def brand(request):
     brands=Brand.objects.all()
@@ -80,10 +88,12 @@ def addbrand(request):
             return redirect('brand')
     else:
         return redirect('brand')
-    
+
+  
 def editbrand(request,id):
     brand =Brand.objects.get(id=id)
     return render(request,'admin/editbrand.html',{'brand':brand,'title':'Brand'})
+
 
 def editbrand_action(request):
     if request.method == "POST":
@@ -100,7 +110,61 @@ def editbrand_action(request):
             return redirect('brand')
 
 
+def coupon(request):
+    coupon =Coupon.objects.all()
+    return render(request,'admin/admin_coupon.html' ,{'coupon':coupon})
 
+def addcoupon(request):
+    if request.method == 'POST':
+        code =request.POST.get('coupon-code')
+        expiry_date =request.POST.get('expiry_date')
+        discount_price =request.POST.get('discount_price')
+        
+        
+        
+        Coupon.objects.create(coupon_code=code,expiry_date=expiry_date,discount_price=discount_price)
+        
+        return redirect('coupon')
+    else:
+        return redirect('coupun')
+
+def edit_coupon(request,id):
+    coupon =Coupon.objects.get(id=id)
+    return render(request,'admin/edit_coupon.html',{'coupon':coupon})
+
+def edit_couponaction(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        code = request.POST.get('code')
+        expiry_date = request.POST.get('expiry_date')
+        discount_price = request.POST.get('discount_price')
+        
+        coupon=Coupon.objects.get(id=id)
+        
+        coupon.coupon_code = code
+        coupon.expiry_date = expiry_date
+        coupon.discount_price = discount_price
+        coupon.save()
+        return redirect('coupon')
+
+    return render(request,'admin/admin_coupon.html')
+
+
+
+def couponactive(request):
+    coupons = Coupon.objects.all()
+    current_date = timezone.now().date()
+    
+    for coupon in coupons:
+        if coupon.is_expired < current_date:
+            coupon.active = False
+        else:
+            coupon.active = True
+        coupon.save()
+    
+    return redirect('coupon')
+
+  
 def admin_product(request):
     Products=Product.objects.all()
     return render(request,'admin/admin_product.html',{'Products':Products,'title':'Product'})
@@ -204,4 +268,21 @@ def productdelete(request,id):
     product.delete()
     return redirect('admin_product')
 
-  
+
+def customer(request):
+    customer=User.objects.all().exclude(is_superuser=True)
+    return render(request,'admin/customer.html',{'customer':customer})
+
+def customeractive(request, id):
+    if request.method == 'POST':
+        customer = get_object_or_404(User, id=id)
+        customer.is_active = not customer.is_active
+        customer.save()
+    
+    return redirect('customer')
+
+    
+def order(request):
+    order =Order.objects.all()
+    oderitem =OrderItem.objects.all
+    return render(request,'admin/admin_orderview.html',{'order':order,'oderitem':oderitem})
