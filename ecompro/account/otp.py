@@ -7,8 +7,9 @@ def send_otp(request):
     totp = pyotp.TOTP(pyotp.random_base32(), interval=60)
     otp = totp.now()
     request.session['otp_key'] = totp.secret
-    otp_valid = datetime.now() + timedelta(minutes=1)
+    otp_valid = datetime.now() + timedelta(minutes=2)
     request.session['otp_valid'] = str(otp_valid)
+    print(otp_valid)
     print(f"Your otp is {otp}")
 
     mail = request.session['email']

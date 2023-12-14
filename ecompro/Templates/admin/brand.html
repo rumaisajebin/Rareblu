@@ -16,23 +16,38 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="{% url 'addbrand' %}" method="post">
-          {%csrf_token%}
+        <form action="{% url 'addbrand' %}" method="post" id="brandForm">
+          {% csrf_token %}
           <div class="mb-3">
             <label for="brand-name" class="form-label">Brand name</label>
             <input type="text" class="form-control" id="brand-name" name="brand" required>
+            <div id="brandError" style="color: red;"></div>
           </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <input type="submit" value="Add Brand" class="btn btn-primary">
+        <button type="button" onclick="validateBrand()" class="btn btn-primary">Add Brand</button>
       </div>
       </form>
     </div>
   </div>
 </div>
 
+<script>
+  function validateBrand() {
+    const brandName = document.getElementById('brand-name').value;
+    const errorDiv = document.getElementById('brandError');
 
+    if (brandName.trim() === '') {
+      errorDiv.textContent = 'Brand name cannot be empty.';
+    } else {
+      // Reset error message if validation passes
+      errorDiv.textContent = '';
+      // Submit the form if validation succeeds
+      document.getElementById('brandForm').submit();
+    }
+  }
+</script>
 
 <div class="input-group mb-3">
   <table class="table text-center">

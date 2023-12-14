@@ -38,7 +38,11 @@
                 {% endif%}
             </td> 
             <td> 
-                {{product.Stock}}
+                {% if product.Stock > 0 %}
+                {{ product.Stock }}
+                {% else %}
+                <span class="text-danger">Invalid Stock</span>
+                {% endif %}
             </td>
             <td>
                  <a href="{% url 'admin_productview' product.id %}" >view </a>   

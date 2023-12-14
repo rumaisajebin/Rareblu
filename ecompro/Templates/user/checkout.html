@@ -1,100 +1,85 @@
 {% extends 'user/base.html' %}
 {% block main %}
-<div class="container my-3">
+<div class="container h-auto">
+  <div class="card mb-3 h-auto">
   <form action="{% url 'place_order' %}" method="post">
     {% csrf_token %}
-  <div class="row">
-    <div class="col-md-4 order-md-2 mb-4">
-      <!-- Cart Details -->
-      <h4 class="d-flex justify-content-between align-items-center mb-3">
-        <span class="text-muted">Your cart</span>
-        <span class="badge badge-secondary badge-pill"></span>
-      </h4>
-      <ul class="list-group mb-3">
+    <div class="row">
+      <div class="col-md-4 order-md-2 mb-4">
+        <h4 class="d-flex justify-content-between align-items-center">
+          <span class="text-muted">Your cart</span>
+        </h4>
+        <!-- Cart Details -->
+        <ul class="list-group mb-3">
+          <hr>
+          {% for item in cart %}
+          <li class="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <h6 class="my-0">{{ item.product.Product_Name }}</h6>
+              <small class="text-muted">{{ item.quantity }}</small>
+            </div>
 
-        <form class="card p-2">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Promo code">
-            <div class="input-group-append">
-              <button type="submit" class="btn btn-secondary">Redeem</button>
+            <span class="text-muted">₹ {{ item.total_price }}</span>
+          </li>
+          {% endfor%}
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Total Cost </span>
+            <strong> ₹ {{ total_cart_price }} </strong>
+            <span>Discount Price </span>
+            <strong> ₹ {{ discount_price }} </strong>
+          </li>
+        </ul>
+        <!-- payment details -->
+        <h4 class="mb-3">Payment</h4>
+        <div class="d-block my-3">
+          <div class="form-check">
+            <div class="row">
+              <div class="col-auto">
+                <input class="form-check-input" type="radio" id="cashOnDelivery" name="paymentmethod" value="COD">
+                <label class="form-check-label" for="cashOnDelivery">Cash on Delivery</label>
+              </div>
             </div>
-          </div>
-        </form>
-        <hr>
-        {% for item in cart %}
-        <li class="list-group-item d-flex justify-content-between lh-condensed">
-          <div>
-            <h6 class="my-0">{{ item.product.Product_Name }}</h6>
-            <small class="text-muted">{{ item.quantity }}</small>
-          </div>
 
-          <span class="text-muted">₹ {{ item.total_price }}</span>
-        </li>
-        {% endfor%}
-        <li class="list-group-item d-flex justify-content-between">
-          <span>Total Cost </span>
-          <strong> ₹ {{ total_cart_price }} </strong>
-        </li>
-      </ul>
-      <!-- payment details -->
-      <h4 class="mb-3">Payment</h4>
-      <div class="d-block my-3">
-        <div class="form-check">
-          <div class="row">
-            <div class="col-auto">
-              <input class="form-check-input" type="radio" id="cashOnDelivery" name="paymentmethod"
-                value="COD">
-              <label class="form-check-label" for="cashOnDelivery">Cash on Delivery</label>
+
+            <div class="row">
+              <div class="col-auto">
+                <input class="form-check-input" type="radio" id="paypal" name="paymentmethod" value="PayPal">
+                <label class="form-check-label" for="paypal">PayPal</label>
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <input class="form-check-input" type="radio" id="paypal" name="paymentmethod" value="PayPal">
-            <div class="col-auto">
-              <label class="form-check-label" for="paypal">PayPal</label>
+
+            <div class="row">
+              <div class="col-auto">
+                <input class="form-check-input" type="radio" id="Wallet" name="paymentmethod" value="Wallet">
+                <label class="form-check-label" for="Wallet">Wallet</label>
+              </div>
             </div>
+
           </div>
         </div>
+
+        <hr class="mb-4">
+        <input class="btn btn-primary btn-lg btn-block" type="submit" value="Continue to checkout">
       </div>
 
-      <hr class="mb-4">
-      <input class="btn btn-primary btn-lg btn-block" type="submit" value="Continue to checkout">
 
-    </div>
-    <div class="col-md-8 order-md-1">
-      {% for user_address in user_addresses %}
-      <!-- Billing addresses -->
-      <a href="{% url 'addressview' user_address.id %}">address</a>
-      <h4 class="mb-3"> {{ forloop.counter }} Billing address </h4>
-      <a href="{% url 'edit_address' user_address.id %}" class="btn btn-primary">Edit</a>
-      <a href="{% url 'addressdelete' user_address.id %}" class="btn btn-danger">Delete</a>
-      {% endfor %}
-
-      <!-- Selected Address Display -->
-      <div class="container">
-        <strong>ID</strong>{{ address.user.id }}
-        <strong>NAME</strong>{{ address.full_name }}
-        <strong>ADDRESS </strong> {{ address.address1 }}
-        <strong>ADDRESS 2</strong> {{ address.address2 }}
-        <strong>STATE</strong>{{ address.city }}
-        <strong>PHONE NO </strong>{{ address.phone_1 }}
-        <strong>PHONE NO</strong> {{ address.phone_2 }}
-        <strong>PINCODE</strong>{{ address.pincode }}
-
+      <div class="col-md-8 order-md-1 my-3">
+        <a href="{% url 'add_address' %}" class="btn btn-success">Add New Address</a>
+        <div class="form-group">
+          <label for="addressSelect">Select Address</label>
+          <select class="form-control" id="addressSelect" name="address">
+            {% for user_address in user_addresses %}
+            <option value="{{user_address.id}}">{{ user_address.full_name }} - {{ user_address.address1 }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
       </div>
 
+      
     </div>
-    <a href="{% url 'add_address' %}" class="btn btn-success">Add New Address</a>
-    <!-- Form for adding addresses -->
-    <div class="form-group">
-      <label for="addressSelect">Select Address</label>
-      <select class="form-control" id="addressSelect" name="address">
-        {% for user_address in user_addresses %}
-        <option value="{{ user_address.id }}">{{ user_address.full_name }} - {{ user_address.address1 }}</option>
-        {% endfor %}
-      </select>
-    </div>
-  </div>
   </form>
+  </div>
 </div>
 
 <!-- Existing HTML content -->

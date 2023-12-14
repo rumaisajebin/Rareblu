@@ -1,0 +1,81 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card d-flex flex-column h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Order Information</h5>
+                    <p><strong>Order ID:</strong> {{ order.id }}</p>
+                    <p><strong>User:</strong> {{ order.user }}</p>
+                    <p><strong>Address:</strong> {{ order.address.address1 }}</p>
+                    <p><strong>Created:</strong> {{ order.created }}</p>
+                    <p><strong>Total Paid:</strong> {{ order.total_paid }}</p>
+                    <p><strong>Billing Status:</strong> {{ order.billing_status }}</p>
+                    <p><strong>ACTIVE:</strong>
+                         {% if order.active %}
+                         <td><a class=" text-success">Active</a></td>
+                        {% else %}
+                        <td><a class="text-danger">Cancelled</a></td>
+                        {% endif %}</p>
+                    <p><strong>Status:</strong> {{ order.status }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card d-flex flex-column h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Order Items</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Image</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order_items %}
+                                <tr>
+                                    <td>{{ item.product }}</td>
+                                    <td><img src="{{ item.product.img1.url }}" alt="{{ item.product.img1.url }} Image"
+                                            style="width: auto; height: 50px; "></td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.price }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mt-4">
+            <div id="statusOptions">
+                <div class="card border-0">
+                    <div class="card-body">
+                        <h5 class="card-title">Status Update</h5>
+                        <form id="statusForm" action="{% url 'order_update' order.id %}" method="post">
+                            {% csrf_token %}
+                            <select class="form-select" name="new_status" onchange="this.form.submit()">
+                                {% for status, status_display in order_status_choices %}
+                                    <option value="{{ status }}">{{ status_display }}</option>
+
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                            <div id="reasonBox" style="display: none;">
+                                <label for="return_reason">Reason:</label>
+                                <input type="text" name="return_reason" id="return_reason">
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-2">Update Status</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main%}

@@ -1,0 +1,12 @@
+{% extends 'user/base.html' %}
+{% block main %}
+<div class="d-flex justify-content-center align-items-center vh-10 my-7">
+    <div class="card text-center">
+        <div class="card-body">
+            <h1>paymentsuccessful</h1>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'order_listing' %}" class="btn btn-primary">Order Status</a>
+        </div>
+    </div>
+</div>
+{% endblock main %}

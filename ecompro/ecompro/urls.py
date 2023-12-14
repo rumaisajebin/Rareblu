@@ -23,7 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('account.urls')),
     path('',include('admin_side.urls')),
-    path('',include('cart.urls')), 
+    path('',include('cart.urls')),
+    path('', include("paypal.standard.ipn.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

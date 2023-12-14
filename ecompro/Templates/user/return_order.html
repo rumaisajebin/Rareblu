@@ -1,0 +1,63 @@
+{% extends 'user/base.html' %}
+{% block main %}
+<div class="text-center">
+    <u>
+        <h3 class="text-muted">Order Details</h3>
+    </u>
+</div>
+<div class="container mt-4">
+    <div class="row">
+        <!-- Order Information Column -->
+        <div class="col-md-6 d-flex">
+            <div class="card flex-grow-1">
+                <div class="card-body">
+                   <u><h5 class="card-title">Order Information</h5></u>
+                    <p><strong>Order ID:</strong> {{ order.id }}</p>
+                    <p><strong>User:</strong> {{ order.user }}</p>
+                    <p><strong>Address:</strong> {{ order.address }}</p>
+                    <p><strong>Created:</strong> {{ order.created }}</p>
+                    <p><strong>Total Paid:</strong> {{ order.total_paid }}</p>
+                    <p><strong>Billing Status:</strong> {{ order.billing_status }}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="reason">Reason for Return:</label>
+                            <input type="text" id="reason" name="reason" class="form-control" placeholder="Enter reason for return">
+                        </div>
+                        <button type="submit" class="btn btn-success">Request Return</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Order Items Column -->
+        <div class="col-md-6 d-flex">
+            <div class="card flex-grow-1">
+                <div class="card-body">
+                    <u><h5 class="card-title">Order Items</h5></u>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Image</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items.all %}
+                            <tr>
+                                <td>{{ item.product }}</td>
+                                <td><img src="{{ item.product.img1.url }}" alt="{{ item.product.img1.url }} Image" style="width: auto; height: 50px;"></td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.price }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+{% endblock main %}

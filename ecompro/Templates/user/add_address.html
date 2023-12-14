@@ -3,10 +3,7 @@
 <div class="container my-3">
   
 <form method="post" action="{% url 'addaddress_perform' %}">
-
-
   {% csrf_token %}
-
   <div class="row g-3">
     <div class="col-md-7">
       <label for="custName" class="form-label">Customer Name</label>
@@ -67,4 +64,54 @@
 
 </form>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('submit').addEventListener('click', function (event) {
+        const fullName = document.getElementById('custName');
+        const address1 = document.getElementById('address');
+        const address2 = document.getElementById('address2');
+        const phoneNumber1 = document.getElementById('custAdd2');
+        const phoneNumber2 = document.getElementById('custAdd2');
+        const pincode = document.getElementById('Pincode');
+        const errorMessages = [];
+  
+        if (!/^[A-Za-z]+$/.test(fullName.value.trim())) {
+          errorMessages.push('Please enter a valid customer name without numbers or special characters.');
+          fullName.classList.add('is-invalid');
+        } else {
+          fullName.classList.remove('is-invalid');
+        }
+  
+        if (!/^\d+$/.test(phoneNumber1.value.trim())) {
+          errorMessages.push('Please enter a valid phone number without spaces or special characters.');
+          phoneNumber1.classList.add('is-invalid');
+        } else {
+          phoneNumber1.classList.remove('is-invalid');
+        }
+  
+        if (!/^\d+$/.test(phoneNumber2.value.trim())) {
+          errorMessages.push('Please enter a valid phone number without spaces or special characters.');
+          phoneNumber2.classList.add('is-invalid');
+        } else {
+          phoneNumber2.classList.remove('is-invalid');
+        }
+  
+        if (!/^\d+$/.test(pincode.value.trim())) {
+          errorMessages.push('Please enter a valid pincode without spaces or special characters.');
+          pincode.classList.add('is-invalid');
+        } else {
+          pincode.classList.remove('is-invalid');
+        }
+  
+        if (errorMessages.length > 0) {
+          event.preventDefault(); // Prevent form submission if there are errors
+          // Display error messages or handle them as needed
+          console.log(errorMessages);
+        }
+      });
+    });
+  </script>
+  
+  
 {% endblock main %}

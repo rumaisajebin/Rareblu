@@ -1,0 +1,38 @@
+{% extends 'user/base.html' %}
+{% block main %}
+<div class="container mt-4">
+    <div class="text-center">
+        <h3 class="text-muted">Wallet</h3>
+    </div>
+
+    <!-- Balance Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4 class="card-title">Current Balance</h4>
+            <p class="lead">Your current balance: <b>${{ total_balance }}</b> </p>
+            <!-- You can add more details like currency, payment methods, etc. here -->
+        </div>
+    </div>
+
+    <!-- Transaction History Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4 class="card-title">Transaction History</h4>
+            <div class="list-group">
+                {% for wallet_item in wallet %}
+                <a href="#" class="list-group-item list-group-item-action">
+                    <p class="mb-1">Transaction ID: {{ wallet_item.transaction_id }}</p>
+                    <p class="mb-1">Date: {{ wallet_item.balance_returned|date:"F j, Y" }}</p>
+                    <p class="mb-1">Amount: ${{ wallet_item.amount }}</p>
+                    <p class="mb-1">Type: {{ wallet_item.balance_type }}</p>
+                </a>
+                {% empty %}
+                <p>No transactions yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+</div>
+{% endblock main %}

@@ -1,0 +1,45 @@
+{% extends 'user/base.html' %}
+
+{% block main %}
+<div class="text-center">
+    <h5 class="text-decoration-underline"><strong>Orders</strong></h5>
+</div>
+<div class="table-responsive">
+    <table class="table">
+        <thead class="table-light">
+            <tr>
+                <th>Sl.No</th>
+                <th>Created</th>
+                <th>Total Paid</th>
+                <th>Status</th>
+                <th>View</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ord in order %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ ord.created }}</td>
+                <td>{{ ord.total_paid }}</td>
+                <td>{{ ord.status }}</td>
+
+                <td><a href="{% url 'order_detailview' ord.id %}" class="btn btn-primary">View</a></td>
+                
+                {% if ord.status == 'confirmed' %}
+                    {% if ord.active %}
+                        <td><a href="{% url 'cancel_order' ord.id %}" class="btn btn-success">Cancel</a></td>
+                    {% else %}
+                        <td><a class="btn btn-danger">Cancelled</a></td>
+                    {% endif %}
+                {% elif ord.status == 'delivered' %}
+                    <td><a href="{% url 'return_order' ord.id %}" class="btn btn-success">Return</a></td>
+                {% endif %}
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<hr>
+{% endblock main %}

@@ -4,17 +4,21 @@
         <div class="col-lg-4 col-md-6 mb-4">
             <a href="{% url 'product_view' product.id %}" class="link-light" style="color: black ; "
                 id="double-click-button">
-                <div class="card h-100">
-                    <img src="{{ product.img1.url }}" class="card-img-top" style="height: 280px; width: 100%;"
-                        alt="{{ product.Product_Name }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.Product_Name }}</h5>
-                        <p class="card-text"><strong>Brand:</strong> {{ product.Brand }}</p>
-                        <p class="card-text"><strong>Price:</strong> ₹ {{ product.price }}</p>
-                        <a class="btn btn-primary fw-bold" href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
-                    </div>
-                </div>
-            </a>
+          <div class="card h-100">
+            <img src="{{ product.img1.url }}" class="card-img-top" style="height: 280px; width: 100%;"
+              alt="{{ product.Product_Name }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ product.Product_Name }}</h5>
+                <p class="card-text"><strong>Brand:</strong> {{ product.Brand }}</p>
+                <p class="card-text"><strong>Price:</strong> ₹ {{ product.price }}</p>
+                <div class="d-flex justify-content-between">
+                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success mt-2">Add To Cart</a>
+                <a href="{% url 'add_to_wishlist' product.id %}" class="btn btn-outline mt-2">
+                  <i class="fa-regular fa-heart align-middle" style="color: #2F3C7E; font-size: 22px;"></i>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
         {% endfor %}
     </div>

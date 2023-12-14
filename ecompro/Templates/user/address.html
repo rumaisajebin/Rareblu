@@ -1,0 +1,28 @@
+{% extends 'user/base.html' %}
+{% block main %}
+<div class="container  mb-4 p-3">
+  <div class="d-grid gap-2">
+    <a href="{% url 'add_address' %}" class="btn btn-success btn-block">Add New Address</a>
+  </div>
+</div>
+  {% for user_address in address %}
+    <div class="container border mb-4 p-3">
+      <div class="row">
+        <div class="col-md-6">
+          <strong>NAME:</strong> {{ user_address.full_name }} <br>
+          <strong>ADDRESS:</strong> {{ user_address.address1 }} <br>
+          <strong>ADDRESS 2:</strong> {{ user_address.address2 }} <br>
+          <strong>STATE:</strong> {{ user_address.city }} <br>
+          <strong>PHONE NO:</strong> {{ user_address.phone_1 }} <br>
+          <strong>PHONE NO:</strong> {{ user_address.phone_2 }} <br>
+          <strong>PINCODE:</strong> {{ user_address.pincode }} <br>
+        </div>
+        <div class="col-md-6 d-flex align-items-center justify-content-end">
+          <a href="{% url 'edit_address' user_address.id %}" class="btn btn-primary mr-2">Edit</a>
+          <a href="{% url 'addressdelete' user_address.id %}" class="btn btn-danger">Delete</a>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+
+{% endblock main %}

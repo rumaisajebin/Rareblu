@@ -7,6 +7,7 @@
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
             Add Category
         </button>
+        
 
         <!-- Modal -->
         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -18,18 +19,19 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="{% url 'addcategory' %}" method="post">
-                            {%csrf_token%}
+                        <form action="{% url 'addcategory' %}" method="post" id="categoryForm">
+                            {% csrf_token %}
                             <div class="mb-3">
                                 <label for="category-name" class="form-label">Category name</label>
                                 <input type="text" class="form-control" id="category-name" name="category" required>
+                                <div id="categoryError" style="color: red;"></div>
                             </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <input type="submit" value="Add Category" class="btn btn-primary">
+                        <button type="button" onclick="validateCategory()" class="btn btn-primary">Add Category</button>
                     </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -42,6 +44,8 @@
                 <th>Sl No</th>
                 <th>Category Name</th>
                 <th>Action</th>
+                <!-- <th>Give Offer</th> -->
+
             </tr>
             {% for c in cat %}
             <tr>
@@ -53,13 +57,29 @@
                     <a href="{% url 'categoryactive' c.id %}" class="btn btn-success">Active</a>
                     {% else %}
                     <a href="{% url 'categoryactive' c.id %}" class="btn btn-danger">Block</a>
-
                     {% endif %}
+
                 </td>
             </tr>
             {% endfor %}
         </table>
     </div>
 </div>
+
+<script>
+    function validateCategory() {
+        const categoryName = document.getElementById('category-name').value;
+        const errorDiv = document.getElementById('categoryError');
+
+        if (categoryName.trim() === '') {
+            errorDiv.textContent = 'Category name cannot be empty.';
+        } else {
+            // Reset error message if validation passes
+            errorDiv.textContent = '';
+            // Submit the form if validation succeeds
+            document.getElementById('categoryForm').submit();
+        }
+    }
+</script>
 
 {% endblock main%}

@@ -1,0 +1,76 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+
+<div class="input-group-append">
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+        Add Category Offer
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Add Category Offer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="{% url 'add_category_Offer' %}" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Select Category</label>
+                            <select name="category" class="form-control" id="category">
+                                {% for cat in category %}
+                                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="percent_offer" class="form-label">Percent Offer</label>
+                            <input type="text" name="percent_offer" class="form-control" id="percent_offer">
+                        </div>
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            <input type="date" name="start_date" class="form-control" id="start_date">
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">End Date</label>
+                            <input type="date" name="end_date" class="form-control" id="end_date">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Category Offer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<div class="input-group mb-3">
+    <table class="table text-center">
+        <tr>
+            <th>Sl No</th>
+            <th>Category Name</th>
+            <th>Percent Offer</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+        </tr>
+        {% for offer in categoryoffer %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ offer.category.name }}</td>
+            <td>{{ offer.percent_offer }}</td>
+            <td>{{ offer.start_date }}</td>
+            <td>{{ offer.end_date }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</div>
+{% endblock main %}

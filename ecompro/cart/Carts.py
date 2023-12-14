@@ -1,6 +1,5 @@
 from django.conf import settings
-from admin_side.models import Product
-
+from admin_side.models import Product,Coupon
 
 class Cart(object):
     def __init__(self, request):

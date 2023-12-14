@@ -47,11 +47,11 @@ INSTALLED_APPS = [
     'account',
     'admin_side',
     'cart',
-    # 'paypal.standard.ipn',
+    'paypal.standard.ipn',
     
 ]
 
-
+SITE_ID=1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -76,7 +76,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
                 'cart.context_processor.cart',
+                'cart.context_processor.wishlist_processor',
             ],
         },
     },
@@ -161,3 +163,7 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'jebinrumaisa@gmail.com'
 EMAIL_HOST_PASSWORD = 'csqo yior dtey iffx'
+
+
+PAYPAL_RECEIVER_EMAIL ='rareblu@gmail.com'
+PAYPAL_TEST = True

@@ -31,6 +31,33 @@
 </head>
 <body>
 
+
+    {% if messages %}
+    {% for message in messages %}
+    {% if messages %}
+    <div class="justify-content-center fixed-top top-0 start-50 translate-middle-x" style="z-index: 1000;">
+      {% for message in messages %}
+        {% if message.tags == 'success' %}
+          <div class="alert alert-success alert-dismissible fade show text-center w-50" role="alert">
+            <strong>Success! </strong>{{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% elif message.tags == 'error' %}
+          <div class="alert alert-danger alert-dismissible fade show text-center w-50" role="alert">
+            <strong>Error! </strong>{{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% else %}
+          <div class="alert alert-info alert-dismissible fade show text-center w-50" role="alert">
+            <strong>Error! </strong>{{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
     <div class="container">
         <div class="login-container">
             <h2 class="text-center">Log In</h2>
@@ -45,6 +72,8 @@
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
                 <button type="login" class="btn btn-primary btn-block">LogIn</button>
+                <a href="{%url 'forget_password'%}">Forget Password</a>
+                <br>
                 <a href="{%url 'sign_up'%}">Don't have an account</a>
             </form>
         </div>

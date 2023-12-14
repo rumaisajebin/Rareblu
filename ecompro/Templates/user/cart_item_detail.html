@@ -10,6 +10,13 @@
         </div>
     </div>
     <p class="fw-bold text-secondary m-0">${{ item.total_price }}</p>
-
+    <!-- {% if item.category_offers %}
+        <p>Available Offers:</p>
+        <ul>
+            {% for offer in item.category_offers %}
+                <li>{{ offer.percent_offer }}% off - Valid until {{ offer.end_date }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %} -->
 </div>
 {% endif %}

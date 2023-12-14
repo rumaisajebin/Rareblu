@@ -1,0 +1,36 @@
+{% extends 'user/base.html' %}
+
+{% block main %}
+<section class="bg-light p-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3 class="fw-bold text-secondary">Your Wishlist</h3>
+                <hr>
+                <div class="row">
+                    {% for item in wish %}
+                    <div class="bg-white rounded shadow-sm border d-flex justify-content-between p-3 align-items-center my-1"
+                        id="wishlist-item-{{ item.product.id }}">
+                        <img src="{{ item.product.img1.url }}" alt="Product-image" class="img-fluid"
+                            style="height: 100px">
+                        <div class="d-flex flex-column">
+                            <p class="fw-bold m-0">{{ item.product.Product_Name }}</p>
+                        </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="text-secondary m-0">${{ item.product.price }}</p>
+                            </div>
+                            <a href="{% url 'product_view' item.product.id %}" class="btn btn-outline">View</a>
+                            <a href="{% url 'add_to_cart' item.product.id %}" class="btn btn-success mt-2">Add To Cart</a>
+                            <a href="{% url 'wish_remove' item.id %}" class="btn btn-outline">Remove</a>
+                        </div>
+                    {% empty %}
+                    <div class="col">
+                        <p>Your wishlist is empty.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock main %}

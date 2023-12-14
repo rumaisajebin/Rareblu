@@ -1,20 +1,22 @@
 {% extends 'admin/admin.html' %}
 {% block main %}
 <div class="container">
-  <form method="post" action="{% url 'addproduct_perform' %}" enctype="multipart/form-data" onsubmit="return validateForm()">
+  <form method="post" action="{% url 'addproduct_perform' %}" enctype="multipart/form-data"
+    onsubmit="return validateForm()">
     {% csrf_token %}
     <div class="form-group">
       <label for="exampleFormControlInput1">Title</label>
-      <input type="text" class="form-control" id="title" name="name">
+      <input type="text" class="form-control" id="title" name="name" required>
+      <span id="titleError" class="text-danger"></span>
     </div>
     <br>
     <div class="form-group">
       <label for="exampleInputEmail1">Category</label>
       <select name="category" class="form-control" id="category">
         {% for category in category %}
-          {% if category.active %}
-            <option value="{{ category.id }}">{{ category.name }}</option>
-          {% endif %}
+        {% if category.active %}
+        <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endif %}
         {% endfor %}
       </select>
     </div>
@@ -22,9 +24,9 @@
       <label for="exampleInputEmail1">Brand</label>
       <select name="brand" class="form-control" id="brand">
         {% for brand in brand %}
-          {% if brand.active %}
-            <option value="{{ brand.id }}">{{ brand.name }}</option>
-          {% endif %}
+        {% if brand.active %}
+        <option value="{{ brand.id }}">{{ brand.name }}</option>
+        {% endif %}
         {% endfor %}
       </select>
     </div>
@@ -75,23 +77,49 @@
   </form>
 </div>
 
+
 <script>
   function validateForm() {
+    var titleInput = document.getElementById('title');
+    var titleError = document.getElementById('titleError');
+    var trimmedTitle = titleInput.value.trim();
+
+    if (trimmedTitle === '') {
+      titleError.textContent = 'Title cannot be empty.';
+      return false;
+    } else {
+      titleError.textContent = '';
+      return true;
+    }
+  }
+</script>
+
+<script>
+  function validateForm() {
+    var titleInput = document.getElementById('title');
     var priceInput = document.getElementById('price');
     var stockInput = document.getElementById('Pstock');
     var descriptionInput = document.getElementById('Pdescription');
     var image1Input = document.getElementById('image1');
-    var image2Input = document.getElementById('image2');
-    var image3Input = document.getElementById('image3');
-    var image4Input = document.getElementById('image4');
-    
+
+    var titleError = document.getElementById('titleError');
     var priceError = document.getElementById('priceError');
     var stockError = document.getElementById('stockError');
     var descriptionError = document.getElementById('descriptionError');
     var image1Error = document.getElementById('image1Error');
-    var image2Error = document.getElementById('image2Error');
-    var image3Error = document.getElementById('image3Error');
-    var image4Error = document.getElementById('image4Error');
+
+    //title vallidation
+    var trimmedtitle = titleInput.value.trim();
+    if (trimmedtitle === '') {
+      titleError.textContent = 'title cannot be null.';
+      return false;
+    } else if (/^\s+$/.test(trimmedtitle)) {
+      // Check if the description contains only spaces
+      titleError.textContent = 'title cannot be only spaces.';
+      return false;
+    } else {
+      titleError.textContent = '';
+    }
 
     // Price validation
     var priceValue = parseFloat(priceInput.value);
@@ -155,7 +183,7 @@
       return true;
     }
 
-    if (!validateImage(image1Input, image1Error) || !validateImage(image2Input, image2Error) || !validateImage(image3Input, image3Error) || !validateImage(image4Input, image4Error)) {
+    if (!validateImage(image1Input, image1Error)) {
       return false;
     }
 

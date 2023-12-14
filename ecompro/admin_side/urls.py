@@ -28,20 +28,30 @@ urlpatterns=[
     path('editbrand_action',views.editbrand_action,name='editbrand_action'),
     path('brandactive/<int:id>/',views.brandactive,name='brandactive'),
     
+    
     path('coupon',views.coupon,name='coupon'),
     path('addcoupon',views.addcoupon,name='addcoupon'),
     path('edit_coupon/<int:id>/',views.edit_coupon,name='edit_coupon'),
     path('edit_couponaction',views.edit_couponaction,name='edit_couponaction'),
-    path('couponactive',views.couponactive,name='couponactive'),
     
     
     path('customer',views.customer,name='customer'),
     path('customeractive/<int:id>/',views.customeractive,name='customeractive'),
     
+    
     path('order',views.order,name='order'),
+    path('order_return/<int:order_id>/',views.order_return,name='order_return'),
+    path('order_view/<int:order_id>/',views.order_view,name='order_view'),
+    path('order_update/<int:order_id>/',views.order_update,name='order_update'),
+    path('returnedorders',views.returnedorders,name='returnedorders'),
+    path('returned_details/<int:id>/',views.returned_details,name='returned_details'),
+    # path('returned_orderview/<int:order_id>/',views.returned_orderview,name='returned_orderview'),
     
+    path('category_Offer',views.category_Offer,name='category_Offer'),
+    path('add_category_Offer',views.add_category_Offer,name='add_category_Offer'),
+    
+    path('salesreport',views.salesreport,name='salesreport'),
+    path('filter_salesreport',views.filter_salesreport,name='filter_salesreport'),
+    path('generate_sales_report_pdf',views.generate_sales_report_pdf,name='generate_sales_report_pdf'),
 
-    
-    # path('search',views.search,name='search'),
-    
     ]

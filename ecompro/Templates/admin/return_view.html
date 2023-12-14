@@ -1,0 +1,34 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+<div class="card">
+    <div class="card-body">
+        <h3 class="card-title">Order ID: {{ returned.order_id }}</h3>
+        <p>Product Name : {{ returned.order.product.Product_Name }}</p>
+        <p>Reason for Return : {{ returned.reason }}</p>
+        <tr>
+            <th>Order Status : </th>
+
+            <td>{{ returned.return_status}}</td>
+        </tr>
+        <tr>
+            {% if returned.return_status == returned.RETURN_PENDING %}
+            <form method="post" action="">
+                {% csrf_token %}
+                <th>
+                    <select name="status" class="form-select" required>
+                        {% for status_value, status_display in returned.RETURN_STATUS_CHOICES %}
+                        <option value="{{ status_value }}" {% if status_value == returned.status %}selected{% endif %}>
+                            {{status_display }}</option>
+                        {% endfor %}
+                    </select>
+                </th>
+                <td><input type="submit" value="Update" class="btn btn-primary"></td>
+            </form>
+            <!-- {% else %} -->
+            <!-- <td colspan="2"> Product {{ returned.return_status }}</td> -->
+            {% endif %}
+        </tr>
+
+    </div>
+</div>
+{% endblock main %}

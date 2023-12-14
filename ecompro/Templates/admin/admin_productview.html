@@ -27,19 +27,36 @@
                                 <td>{{ product.Category }}</td>
                             </tr>
                             <tr>
+                            <td>Category Offer</td>
+                            <td>
+                                {% if category_offers %}
+                                
+                                    {% for offer in category_offers %}
+                                    {{ offer.percent_offer }}% offer valid from {{ offer.start_date }} to {{offer.end_date }}
+                                    {% endfor %}
+                                
+                                {% else %}
+                                <p>No offers available for this category</p>
+                                {% endif %}
+                            </td>
+                            </tr>
+                            <tr>
                                 <td>Price</td>
+                                
                                 <td>
-                                    {% if product.price >= 0 %}
-                                    {{ product.price }}
-                                    {% else %}
-                                    <span class="text-danger">Invalid Price</span>
-                                    {% endif %}
+                                    {% if discounted_price %}
+                                    <p>Original Price : ₹ {{ original_price }}</p>
+                                    <p>Offer Price : ₹ {{ discounted_price }}</p>
+                                {% else %}
+                                    <p>Price : ₹ {{ original_price }}</p>
+                                    <p>No offer </p>
+                                {% endif %}
                                 </td>
                             </tr>
                             <tr>
                                 <td>Stock</td>
                                 <td>
-                                    {% if product.Stock >= 0 %}
+                                    {% if product.Stock > 0 %}
                                     {{ product.Stock }}
                                     {% else %}
                                     <span class="text-danger">Invalid Stock</span>
@@ -68,18 +85,25 @@
             <!-- Small Images Below Main Image -->
             <div class="col-md-12 mt-3">
                 <div class="row">
-                    <div class="col-md-3">
-                        <img src="{{ product.img2.url }}" class="img-thumbnail" alt="">
-                    </div>
-                    <div class="col-md-3">
-                        <img src="{{ product.img3.url }}" class="img-thumbnail" alt="">
-                    </div>
-                    <div class="col-md-3">
-                        <img src="{{ product.img4.url }}" class="img-thumbnail" alt="">
-                    </div>
+                    {% if product.img2 %}
+                        <div class="col-md-3">
+                            <img src="{{ product.img2.url }}" class="img-thumbnail" alt="">
+                        </div>
+                    {% endif %}
+                    {% if product.img3 %}
+                        <div class="col-md-3">
+                            <img src="{{ product.img3.url }}" class="img-thumbnail" alt="">
+                        </div>
+                    {% endif %}
+                    {% if product.img4 %}
+                        <div class="col-md-3">
+                            <img src="{{ product.img4.url }}" class="img-thumbnail" alt="">
+                        </div>
+                    {% endif %}
                     <!-- Add more small images here -->
                 </div>
             </div>
+            
         </div>
     </div>
 </div>

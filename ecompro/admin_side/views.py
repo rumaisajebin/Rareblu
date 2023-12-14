@@ -1,21 +1,52 @@
 from asyncio import exceptions
-from datetime import timezone
+from datetime import date, timezone
 import datetime
+from decimal import Decimal
+from imaplib import _Authenticator
 from pyexpat.errors import messages
 from django.shortcuts import get_object_or_404, render,redirect,get_list_or_404
-from admin_side.models import Product, Category, Brand ,Coupon
+from admin_side.models import *
 from django.urls import reverse
 from django.db.models import Q
 from django.contrib.auth.models import User
 from cart.models import *
+from django.contrib.auth.decorators import login_required
+
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter, landscape
+from reportlab.lib.pagesizes import A4
 # Create your views here..
 
 
+from django.http import HttpResponseForbidden
 
+def superadmin_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.is_superuser:
+            # User is a superadmin, proceed with the view
+            return view_func(request, *args, **kwargs)
+        else:
+            # User is not a superadmin, return forbidden response
+            return HttpResponseForbidden("Permission Denied: Superadmin required")
+
+    return wrapper
+
+@superadmin_required
 def admin_home(request):
-    return render(request,'admin/admin_dashboard.html',{'title':'Dashboard'})
+    ncustomer=User.objects.all().exclude(is_superuser=True).count()
+    nproduct = Product.objects.all().count()
+    norder = Order.objects.all().count()
+    context={'title':'Dashboard',
+             'ncustomer':ncustomer,
+             'nproduct':nproduct,
+             'norder':norder
+             }
+    return render(request,'admin/admin_dashboard.html',context)
 
 
+# Category
 
 def category(request):
     cat = Category.objects.all()
@@ -62,6 +93,7 @@ def addcategory(request):
         return redirect('category') 
 
   
+# Brand
 
 def brand(request):
     brands=Brand.objects.all()
@@ -110,27 +142,29 @@ def editbrand_action(request):
             return redirect('brand')
 
 
+# Coupon
+
 def coupon(request):
     coupon =Coupon.objects.all()
-    return render(request,'admin/admin_coupon.html' ,{'coupon':coupon})
+    return render(request,'admin/admin_coupon.html' ,{'coupon':coupon,'title':'Coupon'})
+
 
 def addcoupon(request):
     if request.method == 'POST':
         code =request.POST.get('coupon-code')
         expiry_date =request.POST.get('expiry_date')
         discount_price =request.POST.get('discount_price')
-        
-        
-        
-        Coupon.objects.create(coupon_code=code,expiry_date=expiry_date,discount_price=discount_price)
+                     
+        Coupon.objects.create(coupon_code=code,is_expired =expiry_date,discount_price=discount_price)
         
         return redirect('coupon')
     else:
         return redirect('coupun')
 
+
 def edit_coupon(request,id):
     coupon =Coupon.objects.get(id=id)
-    return render(request,'admin/edit_coupon.html',{'coupon':coupon})
+    return render(request,'admin/edit_coupon.html',{'coupon':coupon,'title':'Edit Coupon'})
 
 def edit_couponaction(request):
     if request.method == 'POST':
@@ -142,7 +176,7 @@ def edit_couponaction(request):
         coupon=Coupon.objects.get(id=id)
         
         coupon.coupon_code = code
-        coupon.expiry_date = expiry_date
+        coupon.is_expired = expiry_date
         coupon.discount_price = discount_price
         coupon.save()
         return redirect('coupon')
@@ -150,25 +184,15 @@ def edit_couponaction(request):
     return render(request,'admin/admin_coupon.html')
 
 
+# Product
 
-def couponactive(request):
-    coupons = Coupon.objects.all()
-    current_date = timezone.now().date()
-    
-    for coupon in coupons:
-        if coupon.is_expired < current_date:
-            coupon.active = False
-        else:
-            coupon.active = True
-        coupon.save()
-    
-    return redirect('coupon')
-
-  
 def admin_product(request):
-    Products=Product.objects.all()
-    return render(request,'admin/admin_product.html',{'Products':Products,'title':'Product'})
-
+    if request.user.is_superuser:
+        Products=Product.objects.all()
+        return render(request,'admin/admin_product.html',{'Products':Products,'title':'Product'})
+    else:
+        return HttpResponseForbidden("Permission Denied: Superadmin required")
+    
 def admin_addproduct(request):
     brand=Brand.objects.all()
     category=Category.objects.all()
@@ -199,7 +223,25 @@ def addproduct_perform(request):
     
 def admin_productview(request,id):
     product = Product.objects.get(id=id)
-    return render(request,'admin/admin_productview.html',{'product':product,'title':' View Product'})
+    category_offers = CategoryOffer.objects.filter(category=product.Category, start_date__lte=date.today(), end_date__gte=date.today())
+    
+    original_price = product.price  # Store original price
+    
+    if category_offers.exists():
+        offer = category_offers.first()  # Assuming you want to apply the first offer found
+        discount = offer.percent_offer
+        discounted_price = Decimal(product.price) * (1 - discount / 100)  # Calculate discounted price
+    else:
+        discounted_price = None  # Set discounted price as None if no offer exists
+    
+    context= {
+        'product': product,
+        'title': 'View Product',
+        'original_price': original_price,
+        'discounted_price': discounted_price,
+        'category_offers': category_offers
+    }
+    return render(request, 'admin/admin_productview.html',context)
 
 
 def edit_product(request,id):
@@ -263,15 +305,19 @@ def productactive(request,id):
     product.save()
     return render(request,'admin/admin_productview.html',{'product':product})
 
+
 def productdelete(request,id):
     product=Product.objects.get(id=id)
     product.delete()
     return redirect('admin_product')
 
 
+# Coustmer
+
 def customer(request):
     customer=User.objects.all().exclude(is_superuser=True)
     return render(request,'admin/customer.html',{'customer':customer})
+
 
 def customeractive(request, id):
     if request.method == 'POST':
@@ -281,8 +327,240 @@ def customeractive(request, id):
     
     return redirect('customer')
 
-    
+
+
+# Order
+
 def order(request):
     order =Order.objects.all()
-    oderitem =OrderItem.objects.all
-    return render(request,'admin/admin_orderview.html',{'order':order,'oderitem':oderitem})
+    orderitem =OrderItem.objects.all()
+    return render(request,'admin/admin_orderview.html',{'order':order,'orderitem':orderitem,'title':'Order'})
+
+
+def order_update(request, order_id):
+    order = Order.objects.get(id=order_id)
+    if request.method == 'POST':
+        new_status = request.POST.get('new_status')
+        if new_status:
+            order.status = new_status
+            
+            if new_status == 'delivered' and order.billing_status=='COD':
+                order.paid=True
+                order.save()
+                
+            if (new_status == 'cancelled') and order.paid==True:
+                order_items = OrderItem.objects.filter(order=order)
+                for item in order_items:
+                    item.product.Stock += item.quantity
+                    item.product.save()
+
+                Wallet.objects.create(user=order.user, amount=order.total_paid, order=order)
+
+            order.save()
+            return redirect('order_view', order_id=order_id)
+    return render(request,'admin/order_view.html', {'order': order})
+    
+
+def order_view(request,order_id):
+    order = Order.objects.get(id=order_id)
+    order_items = OrderItem.objects.filter(order=order)
+    order_status_choices = [
+        (status, status_display) for status, status_display in Order.ORDER_STATUS_CHOICES if status != 'returned'
+    ]
+    context = {'title':'Order Details',
+             'order':order,
+             'order_items':order_items,
+             'order_status_choices':order_status_choices}
+    return render(request,'admin/order_view.html',context)
+
+
+# Order Return
+
+def order_return(request,order_id):
+    order = get_object_or_404(Order,id=order_id)
+    if request.POST.get('action') == 'approve':
+        order.is_return_requested = False
+        order.is_return_approved = True
+        order.save()
+    elif request.POST.get('action')=='reject':
+        order.is_return_requested=False
+        order.save()
+    return redirect('order',order_id=order.id)
+
+def returnedorders(request):
+    returned = Returnedproduct.objects.all()
+    return render(request,'admin/returnedorders.html',{'returned':returned,'title':'Returned Orders'})
+    
+def returned_details(request, id):
+    returned = Returnedproduct.objects.get(id=id)
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status:
+            returned.return_status = new_status
+            order = returned.order
+            if new_status == returned.RETURNED:
+                order.status = order.RETURNED
+                order.save()
+                
+            order_items = OrderItem.objects.filter(order=order)
+            for item in order_items:
+                item.product.Stock += item.quantity
+                item.product.save()
+            Wallet.objects.create(user=order.user, amount=order.total_paid, order=order)
+            returned.save()
+            
+            return redirect('returned_details', id=id)
+    return render(request, "admin/return_view.html", {'returned':returned,'title':'Returned Order Details'})
+
+
+# Offer
+
+def category_Offer(request):
+    categoryoffer =CategoryOffer.objects.all()
+    category=Category.objects.exclude(active=False)
+    return render(request,'admin/admin_categoryoffer.html',{'title':'Category Offer','categoryoffer':categoryoffer,'category':category})
+
+def add_category_Offer(request):
+    category=Category.objects.exclude(active=False)
+    if request.method == 'POST':
+        category = request.POST.get('category')
+        percent_offer = request.POST.get('percent_offer')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        
+        CategoryOffer.objects.create(
+            category_id=category,
+            percent_offer=percent_offer,
+            start_date=start_date,
+            end_date=end_date
+        )
+        return redirect('category_Offer')
+    else:
+        return render(request,'admin/admin_categoryoffer.html',{'category':category})
+
+
+# Salesreport
+
+def salesreport(request):
+    order = Order.objects.filter(status='delivered')
+    total_sales = sum(ord.total_paid for ord in order)
+    order_items = OrderItem.objects.filter(order__in=order)
+    item_quantity_sold = sum(item.quantity for item in order_items)
+
+    if request.method == 'POST' and 'generate_pdf' in request.POST:
+        pdf = generate_sales_report_pdf(order, total_sales, order_items, item_quantity_sold)
+
+        response = HttpResponse(content_type='application/pdf')
+        d = datetime.today().strftime('%y-%m-%d')
+        response['Content-Disposition'] = f'inline; filename="{d}_sales_report.pdf"'
+        response.write(pdf)
+        return response
+
+    context ={
+        'title':'Sales Report',
+        'order':order,
+        'total_sales':total_sales,
+        'order_items':order_items,
+        'item_quantity_sold':item_quantity_sold,
+    }
+    return render(request, 'admin/admin_salesreport.html', context)
+
+
+def filter_salesreport(request):
+    if request.method == "POST":
+        start_date = request.POST.get("start_date")
+        end_date = request.POST.get("end_date")
+
+        if start_date and end_date:
+            try:
+                start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+                end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+
+                if end_date < start_date:
+                    messages.error(request, "End date should be greater than or equal to the Start date.")
+                    return redirect('salesreport')
+
+                # Apply date range filter to Order queryset
+                order = Order.objects.filter(created__date__range=(start_date, end_date)).filter(status='delivered')
+                print(order)
+                # Pass the filtered queryset to the template
+                context = {
+                    'title': 'Sales Report',
+                    'order': order,
+                    'start_date': start_date,
+                    'end_date': end_date,
+                }
+
+                return render(request, 'admin/admin_salesreport.html', context)
+
+            except ValueError:
+                messages.error(request, "Invalid Date")
+                return redirect('salesreport')
+
+    return redirect('salesreport')
+
+
+from datetime import datetime
+def generate_sales_report_pdf(order, total_sales, order_items, item_quantity_sold, start_date=None, end_date=None):
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=A4)
+
+    # Start writing the PDF here
+    p.setFont("Helvetica", 15)
+    p.drawString(50, 800, f"Sales Report - {datetime.today().strftime('%Y-%m-%d')}")
+
+    # Create a table structure with borders
+    table_headers = [
+        "Order ID", "Customer", "Total Paid", "Status", "Product", "Price", "Quantity Sold", "Date"
+    ]
+    col_widths = [70, 100, 80, 70, 120, 50, 90, 100]
+
+    # Set initial y-coordinate and draw table headers
+    y_start = 750
+    y = y_start
+    x = 50
+
+    for i, header in enumerate(table_headers):
+        p.drawString(x, y, header)
+        x += col_widths[i]
+    y -= 20
+
+    # Draw table borders
+    p.rect(50, y, sum(col_widths), y_start - y, stroke=1, fill=0)
+
+    # Loop through orders and items to fill the table
+    for ord in order:
+        for item in ord.items.all():
+            x = 50
+            p.drawString(x, y, str(ord.id))
+            x += col_widths[0]
+
+            p.drawString(x, y, str(ord.user.username))
+            x += col_widths[1]
+
+            p.drawString(x, y, f"${ord.total_paid}")
+            x += col_widths[2]
+
+            p.drawString(x, y, str(ord.status))
+            x += col_widths[3]
+
+            p.drawString(x, y, str(item.product.Product_Name))
+            x += col_widths[4]
+
+            p.drawString(x, y, f"${item.price}")
+            x += col_widths[5]
+
+            p.drawString(x, y, str(item.quantity))
+            x += col_widths[6]
+
+            p.drawString(x, y, str(ord.created))
+            y -= 20
+
+    p.setTitle(f'Sales Report')
+
+    p.showPage()
+    p.save()
+
+    pdf = buffer.getvalue()
+    buffer.close()
+    return pdf

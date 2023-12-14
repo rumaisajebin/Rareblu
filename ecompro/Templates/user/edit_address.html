@@ -2,7 +2,7 @@
 {% block main %}
 <div class="container my-3">
   
-<form method="post" action="{% url 'edit_addressperform' address.id %}">
+<form method="post" action="{% url 'edit_addressperform' address.id %}" id="editAddressForm">
 
 
   {% csrf_token %}
@@ -65,4 +65,45 @@
 
 </form>
   </div>
+
+  
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('editAddressForm').addEventListener('submit', function (event) {
+          const fullName = document.getElementById('custName');
+          const address1 = document.getElementById('address');
+          const address2 = document.getElementById('address');
+          const phoneNumber1 = document.getElementById('custAdd2');
+          const phoneNumber2 = document.getElementById('custAdd2');
+          const pincode = document.getElementById('Pincode');
+          const state = document.getElementById('custAdd2');
+
+          const errorMessages = [];
+
+          // Validation for each field
+          if (!fullName.value.trim()) {
+              errorMessages.push('Please enter a valid customer name.');
+              fullName.classList.add('is-invalid');
+          } else {
+              fullName.classList.remove('is-invalid');
+          }
+
+          if (!address1.value.trim()) {
+              errorMessages.push('Please enter your shipping address.');
+              address1.classList.add('is-invalid');
+          } else {
+              address1.classList.remove('is-invalid');
+          }
+
+          // Add validations for other fields similarly
+
+          if (errorMessages.length > 0) {
+              event.preventDefault(); // Prevent form submission if there are errors
+              // Display error messages or handle them as needed
+              console.log(errorMessages);
+          }
+      });
+  });
+</script>
+
 {% endblock main %}

@@ -16,20 +16,24 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="{% url 'addcoupon' %}" method="post">
+        <form action="{% url 'addcoupon' %}" method="post" onsubmit="return validateCouponForm()">
           {%csrf_token%}
           <div class="mb-3">
             <label for="coupon-code" class="form-label">Coupon Code</label>
             <input type="text" class="form-control" id="coupon-code" name="coupon-code" required>
+            <span id="couponCodeError" class="text-danger"></span>
           </div>
+
           <div class="mb-3">
             <label for="expiry_date" class="form-label">Expiry Date</label>
             <input type="date" class="form-control" id="expiry_date" name="expiry_date" required>
-        </div>
-        
+            <span id="expiryDateError" class="text-danger"></span>
+          </div>
+
           <div class="mb-3">
             <label for="discount_price" class="form-label">Discount Price</label>
             <input type="text" class="form-control" id="discount_price" name="discount_price" required>
+            <span id="discountPriceError" class="text-danger"></span>
           </div>
       </div>
       <div class="modal-footer">
@@ -40,7 +44,6 @@
     </div>
   </div>
 </div>
-
 
 
 <div class="input-group mb-3">
@@ -55,24 +58,51 @@
     <tr>
       <td>{{ forloop.counter }}</td>
       <td>{{ cou.coupon_code }}</td>
-      <td>{{ cou.expiry_date }}</td>
+      <td>{{ cou.is_expired }}</td>
       <td>{{ cou.discount_price }}</td>
       <td><a href="{% url 'edit_coupon' cou.id %}" type="button" class="btn btn-primary">Edit</a>
-
-        <!-- admin_coupon.html -->
-
-    {% if coupon.active %}
-        <p>Status: <span class="text-success">Active</span></p>
-    {% else %}
-        <p>Status: <span class="text-danger">Expired</span></p>
-    {% endif %}
-
-
-
-
       </td>
     </tr>
     {% endfor %}
   </table>
 </div>
-{% endblock main%}
+
+<script>
+  function validateCouponForm() {
+    var couponCodeInput = document.getElementById('coupon-code');
+    var expiryDateInput = document.getElementById('expiry_date');
+    var discountPriceInput = document.getElementById('discount_price');
+
+    var couponCodeError = document.getElementById('couponCodeError');
+    var expiryDateError = document.getElementById('expiryDateError');
+    var discountPriceError = document.getElementById('discountPriceError');
+
+    // Coupon Code validation
+    if (couponCodeInput.value.trim() === '') {
+      couponCodeError.textContent = 'Coupon code cannot be empty.';
+      return false;
+    } else {
+      couponCodeError.textContent = '';
+    }
+
+    // Expiry Date validation
+    if (expiryDateInput.value.trim() === '') {
+      expiryDateError.textContent = 'Expiry date cannot be empty.';
+      return false;
+    } else {
+      expiryDateError.textContent = '';
+    }
+
+    // Discount Price validation
+    if (discountPriceInput.value.trim() === '') {
+      discountPriceError.textContent = 'Discount price cannot be empty.';
+      return false;
+    } else {
+      discountPriceError.textContent = '';
+    }
+
+    return true;
+  }
+</script>
+
+{% endblock main %}

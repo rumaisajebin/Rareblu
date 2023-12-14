@@ -1,7 +1,42 @@
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+<!-- Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="messageModalLabel">Messages</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <ul class="list-group" id="messageList">
+            <!-- Messages will be appended here -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+      // Function to show messages in the Bootstrap modal
+      function showMessageModal(messages) {
+  var messageList = document.getElementById('messageList');
+
+  // Clear existing messages
+  messageList.innerHTML = '';
+
+  // Add messages to the modal
+  messages.forEach(function(message) {
+    var li = document.createElement('li');
+    li.textContent = message;
+    li.className = 'list-group-item';
+    messageList.appendChild(li);
+  });
+
+  // Show the modal using Bootstrap's modal function
+  var messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
+  messageModal.show();
+}
+
+// Example of rendering a message (simulated)
+var receivedMessage = ['This is a new message'];
+showMessageModal(receivedMessage);
+</script>

@@ -1,0 +1,98 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Total Sales</h4>
+                    <p class="text-center">Total Sales: ${{ total_sales }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Total Quantity Sold</h4>
+                    <p class="text-center">{{ item_quantity_sold }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <h4 class="card-title text-center text-muted my-2"><u>Orders</u></h4>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+
+                            <!-- Filter and Generate PDF forms in a single row -->
+                            
+                            <form action="{% url 'filter_salesreport' %}" method="post" hx-post="{% url 'filter_salesreport' %}" hx-target="#order-listing" class="row g-3 align-items-center">
+                                {% csrf_token %}
+                                <div class="col-md-4">
+                                    <label for="start_date" class="visually-hidden">Start Date:</label>
+                                    <input type="date" id="start_date" name="start_date" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="end_date" class="visually-hidden">End Date:</label>
+                                    <input type="date" id="end_date" name="end_date" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-outline">Filter</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- generate_pdf -->
+                        <div class="col-md-4">
+                            <form action="{% url 'salesreport' %}" method="post">{% csrf_token %}
+                                <button type="submit" name="generate_pdf" class="btn btn-sm btn-success">Generate PDF</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- salesdata -->
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Total Paid</th>
+                                    <th>Status</th>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity Sold</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ord in order %}
+                                {% for item in ord.items.all %}
+                                <tr>
+                                    
+                                    <td>{{ ord.id }}</td>
+                                    <td>{{ ord.user.username }}</td>
+                                    <td>${{ ord.total_paid }}</td>
+                                    <td>{{ ord.status }}</td>
+                                    <td>{{ item.product.Product_Name }}</td>
+                                    <td>${{ item.price }}</td>
+                                    <td class="text-center">{{ item.quantity }}</td>
+                                    <td>{{ ord.created }}</td>
+
+                                </tr>
+                                {% endfor %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

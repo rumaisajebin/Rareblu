@@ -1,74 +1,92 @@
 {% extends 'user/base.html' %}
 {% block main %}
 <div class="container">
-   
-    <div class="text-center">
-        <h3 class="text-muted">User Profile</h3>
-    </div>
-    <hr>
-        {% if u_profile %}
-    <div class="card-group">
-        <div class="card">
-            {% if u_profile.profile_photo %}
-            <img src="{{ u_profile.profile_photo.url }}" alt="Profile Photo" class="card-img rounded-rectangle" >
-            {% else %}
-            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
-            class="rounded-circle img-fluid" style="width: 150px;">
-            {% endif %}
+
+  <div class="text-center">
+    <h3 class="text-muted">User Profile</h3>
+  </div>
+  <hr>
+
+  {% if u_profile %}
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card border-0">
+        <div class="card-body text-center">
+          {% if u_profile.profile_photo %}
+          <img src="{{ u_profile.profile_photo.url }}" alt="Profile Photo" class="card-img rounded-rectangle" style="width: 150px;height: 150px; ">
+          {% else %}
+          <img
+            src=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJ0AAACdCAMAAACZ+IrkAAAAM1BMVEX///+vs7Tu7uyssLHy8vD19fSorK3e39+0uLm9wMH5+fny8vLq6+vk5eXV1tfR0tPIy8tNSYFFAAAEo0lEQVR4nO2bgZKjIAyGi1ABReH9n/bA1l1tLUES7M5c/p252+nc0c9AQkjwdmOxWCwWi8VisVgsFovFYl2nYXSTnr0PIXg/68mNw7eRVnVzsEYI+SshjA1z922wm9JB9gnnTTJ+HrT6IpsOpj8i+yHsTdDfQbt7cWi0VxMKf7+cbYxsINoTUPjxUrahnO3Jd6EP61NsD76r1t9oz7ItfPaS6Z0LfOEQT87N2YZQx7bwhcarz5l6uIhnXEu46bQ7vOCJqR2cRqE91Mx3dU9A1zfCo7BcUhM8EssltbDeRMSWRO4aDuese0niwDKg4twbnaENy4gd4hAvUMLNtHARj3DPHanhIh5dxlKVMgF0lgpO08NFPKKoNzRgS6LxW19oOtnH4+PyR9k/9xRwY9l3xdO/1pObtA62MDhSOEaJ6aTxU6dUlxT/mnwJH4Xx7gVfI+buQbZKdXNJnoo/hsOmk8Ht2RY+B28vBMaDLRfe2Ra+gt0PCwfHuvkYLuLN4INhYx5kAOk/wUU8aFVgkwFloPE/wxVMrsHV96B03WTYkoCHQybxwP7f65zpovGAp0PmAnk4afNwEQ94PImB64CJnQG4rgP8tseUvoGc2IJwXWfztsPkyHmfyzvsc2qhIerhhvyDQz6x0AF+YeuzvDEfEHpXMLMuT2fq0yiXHVgI2HTReMAY9QdvoDphiuiAgFxftQBSAAo6RCIABBQSuvqQAuUYBOsOkYECdLLIZ4Ex6umABKifCuLdBOQB9eEYoJMf0+INHbB229ER7LMYOsgrzATCTVBy3cwrsoeK58TCQ1TTwUVF0HbQAIh4Bx4XoRwKPtMi9oqCLkA2iVIFDZj6fRbKUURyjMx5FnKJpPocBcjvkmQuqhRUdBH5HZAbP/EOajyL5VxJuRmRGxe1KaQ4nFxV1MtF1SqK+hRSePXKp1TZnRDUmQw6z67fYWa3qS+qzs2FxVnUeRaoBWz5go4GW9TpUNxVQ9UCzvTHpDE2hGDNiYYfskRW0jLe3E+Ru9/h/4qsQUEnqshgvLZvJFJa7Q3oGMj6HVSrEFanpZZW2tZqcRUuH9s8H7oRmk0EpNEPV41eujRR+r5f2ipu/VhnFyG+V5Yz3C4FSN7q4o/aBT+VvW+Ghfucgfa24NCT9gz7ybMI+hUfez1gXvzD5z8NQXDl8th4pqA69ju7h55P0mQ86jHKXFp3NLuHzkHSfH83nrTwYWyv6T2bounPvve2pSgpUezl3l2X6E7Ka8wz5+Ei3svao7oX8NpTkafW3Co17Qchu1NxG3YDn/DWHd7ugCYJ7xptcmQZqtiSNns27f3Zn4GzZzBIPyuE9h7U5g5Z1aJ7SK2nd+o7ZOvBG67rZPGeoZP6/t1atcDMa9LjgNzgWm9K4kt6T1njPQahh1veDAD7sSCebfa2gO41Eq7rdKv7xnHtoeFiPtAKLgYWNFzTtwSweK1foEHFu8ZsUfdquGve3KrMUS5hu9WZ78pX3s7yXf063hm+618VLOf7BtvCN4Jo47fYkoYh2+sZ/sAryPfx4Faq+qbRXjQMw/1Xw1+wGYvFYrFYLBaLxWKxWCzW/6R/Pp0+MAT49RQAAAAASUVORK5CYII
+            alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+          {% endif %}
         </div>
-        
-        <div class="col-md-9">
-            <div class="card-text">
-                <p><strong>Username:</strong> {{ u_profile.user.username }}</p>
-                <p><strong>Address:</strong> {{ u_profile.address }}</p>
-                <p><strong>Phone Number:</strong> {{ u_profile.PhoneNumber }}</p>
-                <a href="{% url 'editprofile' %}" class="btn btn-light border border-3">edit</a>
-                <a href="{% url 'editprofile' %}" class="btn btn-light border border-3">Change Password</a>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <hr><hr>
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <p><strong>Username:</strong> {{ u_profile.user.username }}</p>
+          <p><strong>Address:</strong> {{ u_profile.address }}</p>
+          <p><strong>Phone Number:</strong> {{ u_profile.PhoneNumber }}</p>
+          <a href="{% url 'editprofile' %}" class="btn btn-light border border-3">Edit</a>
+          <a href="{% url 'addressview' %}" class="btn btn-light border border-3">Address</a>
+          <a href="{% url 'change_password' %}" class="btn btn-light border border-3">Change Password</a>
+          <a href="{% url 'order_listing' %}" class="btn btn-light border border-3">Orders</a>
+          <a href="{% url 'wallet' %}" class="btn btn-light border border-3">Wallet</a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <hr>
+
+  <div class="container">
     <div class="text-center">
-        <h5 class="text-decoration-underline"><strong>Orders</strong></h5>
+      <u>
+        <h3 class="text-muted">Available Coupons</h3>
+      </u>
     </div>
-    <div class="table-responsive">
-        <table class="table">
-            <thead class="table-light">
-                <tr>
-                    <th>Sl.No</th>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                    <th>Cancel</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for ord in order %}
-                <tr>
-                    <td>{{ ord.order.id}}</td>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ ord.product }}</td>
-                    <td>{{ ord.quantity }}</td>
-                    <td>{{ ord.price }}</td>
-                    <td>{{ ord.status }}</td>
-                    <td><a href="#" class="btn">Cancel</a></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="row">
+      {% if active_coupon %}
+      {% for coupon in active_coupon %}
+      <div class="col-md-4">
+        <div class="card mb-2">
+          <div class="card-body">
+            <h5 class="card-title">{{ coupon.coupon_code }}</h5>
+            <p class="card-text">Discount: {{ coupon.discount_price }}</p>
+            <p class="card-text">Expired: {{ coupon.is_expired }}</p><u>
+              <span class="copy-coupon" style="cursor: pointer;" data-coupon="{{ coupon.coupon_code }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-clipboard" viewBox="0 0 16 16">
+                  <path
+                    d="M4.5 1a.5.5 0 0 1 .5.5V3h7V1.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5V5a2 2 0 0 1-2 2V2H5v11h6V7a2 2 0 0 1 2-2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2.5a.5.5 0 0 1 .5-.5h1z" />
+                </svg>
+                Copy Coupon</u>
+            </span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endif %}
     </div>
-    <hr>
-    {% else %}
-    <p>No profile found.</p>
-    {% endif %}
-</div>
-<!-- {% for order in order %}
-       
-            <p>Order ID: {{ order.id }}</p>
-            <p>Status: {{ order.status }}</p>
-            <p>Total Paid: {{ order.total_paid }}</p>
-            <p>Created: {{ order.created }}</p>
-    {% endfor %} -->
-{% endblock main %}
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('.copy-coupon').click(function () {
+        const couponCode = $(this).data('coupon');
+        const tempInput = $('<input>');
+        $('body').append(tempInput);
+        tempInput.val(couponCode).select();
+        document.execCommand('copy');
+        tempInput.remove();
+        alert('Coupon code copied: ' + couponCode);
+      });
+    });
+  </script>
+
+  {% endblock main %}

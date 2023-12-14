@@ -1,0 +1,33 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+<div class="container mt-4">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Return Status</th>
+                <th>Reason</th>
+                <th>Returned At</th>
+                <th>Received At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for returned_order in returned %}
+            <tr>
+                <td>{{ returned_order.order.id }}</td>
+                <td>{{ returned_order.return_status }}</td>
+                <td>{{ returned_order.reason }}</td>
+                <td>{{ returned_order.returned_at }}</td>
+                <td>{{ returned_order.received_at }}</td>
+                <td><a href="{% url 'returned_details' returned_order.id %}" class="btn btn-light">View</a></td>
+
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No returned orders found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock main %}
