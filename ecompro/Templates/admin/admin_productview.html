@@ -27,32 +27,41 @@
                                 <td>{{ product.Category }}</td>
                             </tr>
                             <tr>
-                            <td>Category Offer</td>
-                            <td>
-                                {% if category_offers %}
-                                
-                                    {% for offer in category_offers %}
-                                    {{ offer.percent_offer }}% offer valid from {{ offer.start_date }} to {{offer.end_date }}
-                                    {% endfor %}
-                                
-                                {% else %}
-                                <p>No offers available for this category</p>
-                                {% endif %}
-                            </td>
-                            </tr>
-                            <tr>
-                                <td>Price</td>
-                                
+                                <td>Category Offer</td>
                                 <td>
-                                    {% if discounted_price %}
-                                    <p>Original Price : ₹ {{ original_price }}</p>
-                                    <p>Offer Price : ₹ {{ discounted_price }}</p>
-                                {% else %}
-                                    <p>Price : ₹ {{ original_price }}</p>
-                                    <p>No offer </p>
-                                {% endif %}
+                                    {% if category_offer %}
+                                        {% for offer in category_offer %}
+                                            {{ offer.percent_offer }}% offer valid from {{ offer.start_date }} to {{ offer.end_date }}
+                                        {% endfor %}
+                                    {% else %}
+                                        <p>No offers available for this category</p>
+                                    {% endif %}
                                 </td>
                             </tr>
+                            <tr>
+                                <td>Product Offer</td>
+                                <td>
+                                    {% if product_offer %}
+                                        {% for offer in product_offer %}
+                                            {{ offer.percent_offer }}% offer valid from {{ offer.start_date }} to {{ offer.end_date }}
+                                        {% endfor %}
+                                    {% else %}
+                                        <p>No offers available for this product</p>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            
+                            <td>Price</td>
+                            <td>
+                                {% if product.get_discounted_price %}
+                                <p>Original Price: ₹ {{ product.price }}</p>
+                                <p>Offer Price: ₹ {{ product.get_discounted_price }}</p>
+                                {% else %}
+                                <p>Price: ₹ {{ product.price }}</p>
+                                <p>No offer</p>
+                                {% endif %}
+                            </td>
+
                             <tr>
                                 <td>Stock</td>
                                 <td>
@@ -86,24 +95,24 @@
             <div class="col-md-12 mt-3">
                 <div class="row">
                     {% if product.img2 %}
-                        <div class="col-md-3">
-                            <img src="{{ product.img2.url }}" class="img-thumbnail" alt="">
-                        </div>
+                    <div class="col-md-3">
+                        <img src="{{ product.img2.url }}" class="img-thumbnail" alt="">
+                    </div>
                     {% endif %}
                     {% if product.img3 %}
-                        <div class="col-md-3">
-                            <img src="{{ product.img3.url }}" class="img-thumbnail" alt="">
-                        </div>
+                    <div class="col-md-3">
+                        <img src="{{ product.img3.url }}" class="img-thumbnail" alt="">
+                    </div>
                     {% endif %}
                     {% if product.img4 %}
-                        <div class="col-md-3">
-                            <img src="{{ product.img4.url }}" class="img-thumbnail" alt="">
-                        </div>
+                    <div class="col-md-3">
+                        <img src="{{ product.img4.url }}" class="img-thumbnail" alt="">
+                    </div>
                     {% endif %}
                     <!-- Add more small images here -->
                 </div>
             </div>
-            
+
         </div>
     </div>
 </div>

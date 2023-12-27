@@ -1,0 +1,123 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+
+<div class="input-group-append">
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+        Add Product Offer
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Add Product Offer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="{% url 'add_product_Offer' %}" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="product" class="form-label">Select Product</label>
+                            <select name="product" class="form-control" id="product">
+                                {% for pro in product %}
+                                <option value="{{ pro.id }}">{{ pro.Product_Name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="percent_offer" class="form-label">Percent Offer</label>
+                            <input type="text" name="percent_offer" class="form-control" id="percent_offer">
+                            <span id="percentOfferError" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            <input type="date" name="start_date" class="form-control" id="start_date">
+                            <span id="startDateError" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">End Date</label>
+                            <input type="date" name="end_date" class="form-control" id="end_date">
+                            <span id="endDateError" class="text-danger"></span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Category Offer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form[action="{% url "add_product_Offer" %}"]');
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const percentOfferInput = document.getElementById('percent_offer');
+                const start_dateInput = document.getElementById('start_date');
+                const end_dateInput = document.getElementById('end_date');
+                const percentOfferError = document.getElementById('percentOfferError');
+                const startDateError = document.getElementById('startDateError');
+                const endDateError = document.getElementById('endDateError');
+
+                // Resetting previous error message
+                percentOfferError.textContent = '';
+
+                // Validating percent offer
+                const percentOfferValue = parseFloat(percentOfferInput.value);
+                if (percentOfferValue < 0 || percentOfferValue > 100 || isNaN(percentOfferValue)) {
+                    percentOfferError.textContent = 'Percent offer must be a number between 0 and 100';
+                    return;
+                }
+
+                // Validating start date
+                const startDateValue = new Date(start_dateInput.value);
+                const currentDate = new Date();
+                if (startDateValue >= currentDate) {
+                    startDateError.textContent = 'Start date must be in the past';
+                    return;
+                }
+
+                // Validating end date
+                const endDateValue = new Date(end_dateInput.value);
+                if (endDateValue <= startDateValue) {
+                    endDateError.textContent = 'End date should be greater than the start date';
+                    return;
+                }
+
+                // Proceed with form submission if all validations pass
+                form.submit();
+            });
+        });
+    </script>
+
+<div class="input-group mb-3">
+    <table class="table text-center">
+        <tr>
+            <th>Sl No</th>
+            <th>Product Name</th>
+            <th>Percent Offer</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+        </tr>
+        {% for offer in productoffer %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ offer.product.Product_Name }}</td>
+            <td>{{ offer.percent_offer }}</td>
+            <td>{{ offer.start_date }}</td>
+            <td>{{ offer.end_date }}</td>
+            <td><a href="{% url 'edit_product_offer' offer.id %}" class="btn btn-danger">Edit</a></td>
+            <td><a href="{% url 'delete_product_Offer' offer.id  %}" class="btn btn-danger">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</div>
+{% endblock main %}

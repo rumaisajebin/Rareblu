@@ -1,0 +1,10 @@
+{% extends 'user/base.html' %}
+{% block main %}
+<h1>Refer a Person</h1>
+<form method="post">
+    {% csrf_token %}
+    <label for="referred_email">Enter Email of Person to Refer:</label>
+    <input type="email" id="referred_email" name="referred_email" required>
+    <button type="submit">Refer</button>
+</form>
+{% endblock main %}

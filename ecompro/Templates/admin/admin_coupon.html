@@ -79,30 +79,46 @@
 
     // Coupon Code validation
     if (couponCodeInput.value.trim() === '') {
-      couponCodeError.textContent = 'Coupon code cannot be empty.';
-      return false;
+        couponCodeError.textContent = 'Coupon code cannot be empty.';
+        return false;
     } else {
-      couponCodeError.textContent = '';
+        couponCodeError.textContent = '';
     }
 
     // Expiry Date validation
     if (expiryDateInput.value.trim() === '') {
-      expiryDateError.textContent = 'Expiry date cannot be empty.';
-      return false;
+        expiryDateError.textContent = 'Expiry date cannot be empty.';
+        return false;
     } else {
-      expiryDateError.textContent = '';
+        expiryDateError.textContent = '';
+
+        // Check if expiry date is a valid date in YYYY-MM-DD format
+        var isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(expiryDateInput.value.trim());
+        if (!isValidDate) {
+            expiryDateError.textContent = 'Enter a valid date in YYYY-MM-DD format.';
+            return false;
+        } else {
+            var today = new Date().toISOString().split('T')[0];
+            if (expiryDateInput.value.trim() < today) {
+                expiryDateError.textContent = 'Expiry date cannot be a past date.';
+                return false;
+            } else {
+                expiryDateError.textContent = '';
+            }
+        }
     }
 
     // Discount Price validation
     if (discountPriceInput.value.trim() === '') {
-      discountPriceError.textContent = 'Discount price cannot be empty.';
-      return false;
+        discountPriceError.textContent = 'Discount price cannot be empty.';
+        return false;
     } else {
-      discountPriceError.textContent = '';
+        discountPriceError.textContent = '';
     }
 
     return true;
-  }
+}
+
 </script>
 
 {% endblock main %}

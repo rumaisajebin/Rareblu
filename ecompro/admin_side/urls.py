@@ -49,9 +49,25 @@ urlpatterns=[
     
     path('category_Offer',views.category_Offer,name='category_Offer'),
     path('add_category_Offer',views.add_category_Offer,name='add_category_Offer'),
+    path('edit_category_offer/<int:offer_id>/',views.edit_category_offer,name='edit_category_offer'),
+    path('delete_category_Offer/<int:offer_id>/',views.delete_category_Offer,name='delete_category_Offer'),
+    
+    path('product_Offer',views.product_Offer,name='product_Offer'),
+    path('add_product_Offer',views.add_product_Offer,name='add_product_Offer'),
+    path('edit_product_offer/<int:offer_id>/',views.edit_product_offer,name='edit_product_offer'),
+    path('delete_product_Offer/<int:offer_id>/',views.delete_product_Offer,name='delete_product_Offer'),
     
     path('salesreport',views.salesreport,name='salesreport'),
     path('filter_salesreport',views.filter_salesreport,name='filter_salesreport'),
     path('generate_sales_report_pdf',views.generate_sales_report_pdf,name='generate_sales_report_pdf'),
+
+                    
+    # path('admin_banner',views.admin_banner,name='admin_banner'),
+    # path('admin_addbanner',views.admin_addbanner,name='admin_addbanner'),
+    # path('addproduct_perform',views.addproduct_perform,name='addproduct_perform'),
+    # path('edit_banner/<int:id>/',views.edit_banner,name='edit_banner'),
+    # path('edit_bannerperform',views.edit_bannerperform,name='edit_bannerperform'),
+    # path('admin_bannerview/<int:id>/',views.admin_bannerview,name='admin_bannerview'),
+    # path('banner_active/<int:id>',views.banner_active,name='banner_active'),
 
     ]

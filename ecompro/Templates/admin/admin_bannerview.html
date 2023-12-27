@@ -1,0 +1,25 @@
+{% extends 'admin/admin.html' %}
+
+{% block main %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Banner Details</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ banner.title }}</h5>
+                    <p class="card-text">{{ banner.text }}</p>
+                    <img src="{{ banner.bimg.url }}" alt="Banner Image" class="img-fluid">
+                    <p>Link: <a href="{{ banner.link }}">{{ banner.link }}</a></p>
+                    <p>Active: {% if banner.is_active %}Yes{% else %}No{% endif %}</p>
+                    <p>Start Date: {{ banner.start_date }}</p>
+                    <p>End Date: {{ banner.end_date }}</p>
+                    <!-- Add more fields as needed -->
+                    <a href="{% url 'edit_banner' banner.id %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'admin_banner' %}" class="btn btn-secondary">Back to Banners</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

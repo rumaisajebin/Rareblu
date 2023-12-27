@@ -1,0 +1,37 @@
+{% extends 'admin/admin.html' %}
+
+{% block main %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Banners</h2>
+            <table class="table">
+                <a href="{% url 'admin_addbanner' %}" class="btn btn-primary">Add Banner</a>
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Text</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for banner in banners %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td><img src="{{ banner.bimg.url }}" alt="Banner Image" width="50"></td>
+                        <td>{{ banner.title }}</td>
+                        <td>{{ banner.text }}</td>
+                        <td>
+                            <a href="{% url 'edit_banner' banner.id %}" class="btn btn-sm btn-primary">Edit</a>
+                            <a href="{% url 'admin_bannerview' banner.id %}" class="btn btn-sm btn-secondary">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock main %}

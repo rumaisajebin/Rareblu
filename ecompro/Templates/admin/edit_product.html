@@ -32,30 +32,85 @@
                 {% endfor %}
             </select>
         </div>
+</div>
+<br>
+<!-- Image 1 -->
+<div class="col">
+    <div class="row align-items-center">
+        {% if product.img1 %}
+        <div class="col-auto">
+            <img src="{{product.img1.url}}" alt="Product Image 1" width="100" class="mr-2" id="image1Preview">
+        </div>
+        {% endif %}
+        <div class="col">
+            <div class="form-group">
+                <label for="exampleFormControlFile1">Choose product image1</label>
+                <input name="image1" type="file" class="form-control-file" id="exampleFormControlFile1" onchange="displaySelectedFile('exampleFormControlFile1', 'image1Preview')">
+                <button type="button" class="btn btn-outline-dark mt-2" onclick="removeImage('exampleFormControlFile1', 'image1Preview')">Remove</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
 
+<!-- Image 2 -->
+<div class="col">
+    <div class="row align-items-center">
+        {% if product.img2 %}
+        <div class="col-auto">
+            <img src="{{product.img2.url}}" alt="Product Image 2" width="100" class="mr-2" id="image2Preview">
+        </div>
+        {% endif %}
+        <div class="col">
+            <div class="form-group">
+                <label for="exampleFormControlFile2">Choose product image2</label>
+                <input name="image2" type="file" class="form-control-file" id="exampleFormControlFile2" onchange="displaySelectedFile('exampleFormControlFile2', 'image2Preview')">
+                <button type="button" class="btn btn-outline-dark mt-2" onclick="removeImage('exampleFormControlFile2', 'image2Preview')">Remove</button>
+            </div>
+        </div>
+    </div>
 </div>
+<br>
 
-<div class="form-group">
-    <label for="exampleFormControlFile1">Choose product image1</label>
-    <input name="image1" type="file" class="form-control -file" id="exampleFormControlFile1">
+<!-- Image 3 -->
+<div class="col">
+    <div class="row align-items-center">
+        {% if product.img3 %}
+        <div class="col-auto">
+            <img src="{{product.img3.url}}" alt="Product Image 3" width="100" class="mr-2" id="image3Preview">
+        </div>
+        {% endif %}
+        <div class="col">
+            <div class="form-group">
+                <label for="exampleFormControlFile3">Choose product image3</label>
+                <input name="image3" type="file" class="form-control-file" id="exampleFormControlFile3" onchange="displaySelectedFile('exampleFormControlFile3', 'image3Preview')">
+                <button type="button" class="btn btn-outline-dark mt-2" onclick="removeImage('exampleFormControlFile3', 'image3Preview')">Remove</button>
+            </div>
+        </div>
+    </div>
 </div>
 <br>
-<div class="form-group">
-    <label for="exampleFormControlFile1">Choose product image2</label>
-    <input name="image2" type="file" class="form-control -file" id="exampleFormControlFile1">
-</div>
-<br>
-<div class="form-group">
-    <label for="exampleFormControlFile1">Choose product image3</label>
-    <input name="image3" type="file" class="form-control -file" id="exampleFormControlFile1">
-</div>
-<br>
-<div class="form-group">
-    <label for="exampleFormControlFile1">Choose product image4</label>
-    <input name="image4" type="file" class="form-control -file" id="exampleFormControlFile1">
-</div>
 
+<!-- Image 4 -->
+<div class="col">
+    <div class="row align-items-center">
+        {% if product.img4 %}
+        <div class="col-auto">
+            <img src="{{product.img4.url}}" alt="Product Image 4" width="100" class="mr-2" id="image4Preview">
+        </div>
+        {% endif %}
+        <div class="col">
+            <div class="form-group">
+                <label for="exampleFormControlFile4">Choose product image4</label>
+                <input name="image4" type="file" class="form-control-file" id="exampleFormControlFile4" onchange="displaySelectedFile('exampleFormControlFile4', 'image4Preview')">
+                <button type="button" class="btn btn-outline-dark mt-2" onclick="removeImage('exampleFormControlFile4', 'image4Preview')">Remove</button>
+            </div>
+        </div>
+    </div>
+</div>
 <br>
+
+
 <div class="form-group">
     <label for="exampleFormControlTextarea1">Description</label>
     <textarea name="description" class="form-control" id="description" rows="3">{{ product.Description }}</textarea>
@@ -131,6 +186,29 @@
         }
 
         return true;
+    }
+    function displaySelectedFile(inputId, imageId) {
+        const input = document.getElementById(inputId);
+        const imgElement = document.getElementById(imageId);
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imgElement.src = e.target.result;
+                imgElement.style.display = 'block';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function removeImage(inputId, imageId) {
+        // Reset the file input
+        document.getElementById(inputId).value = "";
+        // Hide the image (if present)
+        const imgElement = document.getElementById(imageId);
+        if (imgElement) {
+            imgElement.style.display = 'none';
+        }
     }
 </script>
 

@@ -1,0 +1,26 @@
+{% extends 'admin/admin.html' %}
+
+{% block main %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Edit Banner</h2>
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" action="{% url 'edit_bannerperfom' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="banner_id" value="{{ banner.id }}">
+                        <div class="mb-3">
+                            <label for="bimg" class="form-label">Banner Image</label>
+                            <input type="file" class="form-control" id="bimg" name="bimg" value="{{ banner.bimg }}">
+                        </div>
+                        <!-- Other fields for editing -->
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="{% url 'admin_banner' %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

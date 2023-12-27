@@ -25,6 +25,7 @@
                     <p class="mb-1">Date: {{ wallet_item.balance_returned|date:"F j, Y" }}</p>
                     <p class="mb-1">Amount: ${{ wallet_item.amount }}</p>
                     <p class="mb-1">Type: {{ wallet_item.balance_type }}</p>
+                    <p class="mb-1">Type: {{ wallet_item.transaction_description }}</p>
                 </a>
                 {% empty %}
                 <p>No transactions yet.</p>

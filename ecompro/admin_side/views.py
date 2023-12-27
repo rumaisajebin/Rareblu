@@ -1,5 +1,5 @@
 from asyncio import exceptions
-from datetime import date, timezone
+from datetime import date, timedelta, timezone
 import datetime
 from decimal import Decimal
 from imaplib import _Authenticator
@@ -38,11 +38,23 @@ def admin_home(request):
     ncustomer=User.objects.all().exclude(is_superuser=True).count()
     nproduct = Product.objects.all().count()
     norder = Order.objects.all().count()
-    context={'title':'Dashboard',
-             'ncustomer':ncustomer,
-             'nproduct':nproduct,
-             'norder':norder
-             }
+    today = datetime.now().date()
+    one_week_ago = today - timedelta(days=7)
+    one_year_ago = today - timedelta(days=365)
+
+    sales_per_day = Order.objects.filter(created__date=today).count()
+    sales_per_week = Order.objects.filter(created__date__gte=one_week_ago).count()
+    sales_per_year = Order.objects.filter(created__date__gte=one_year_ago).count()
+
+    context = {
+        'title': 'Dashboard',
+        'ncustomer': ncustomer,
+        'nproduct': nproduct,
+        'norder': norder,
+        'sales_per_day': sales_per_day,
+        'sales_per_week': sales_per_week,
+        'sales_per_year': sales_per_year,
+    }
     return render(request,'admin/admin_dashboard.html',context)
 
 
@@ -221,27 +233,20 @@ def addproduct_perform(request):
         return redirect('admin_product')
     
     
-def admin_productview(request,id):
+def admin_productview(request, id):
     product = Product.objects.get(id=id)
-    category_offers = CategoryOffer.objects.filter(category=product.Category, start_date__lte=date.today(), end_date__gte=date.today())
-    
-    original_price = product.price  # Store original price
-    
-    if category_offers.exists():
-        offer = category_offers.first()  # Assuming you want to apply the first offer found
-        discount = offer.percent_offer
-        discounted_price = Decimal(product.price) * (1 - discount / 100)  # Calculate discounted price
-    else:
-        discounted_price = None  # Set discounted price as None if no offer exists
-    
-    context= {
+    product.get_discounted_price = product.get_discounted_price()  # Calculate discounted price
+    category_offer = CategoryOffer.objects.filter(category=product.Category, start_date__lte=date.today(), end_date__gte=date.today())
+    product_offer = ProductOffer.objects.filter(product=product, start_date__lte=date.today(), end_date__gte=date.today())
+    context = {
         'product': product,
         'title': 'View Product',
-        'original_price': original_price,
-        'discounted_price': discounted_price,
-        'category_offers': category_offers
+        'product_offer': product_offer,
+        'category_offer': category_offer
     }
-    return render(request, 'admin/admin_productview.html',context)
+    return render(request, 'admin/admin_productview.html', context)
+
+
 
 
 def edit_product(request,id):
@@ -406,14 +411,14 @@ def returned_details(request, id):
             for item in order_items:
                 item.product.Stock += item.quantity
                 item.product.save()
-            Wallet.objects.create(user=order.user, amount=order.total_paid, order=order)
+            Wallet.objects.create(user=order.user, amount=order.total_paid, order=order,transaction_description="Returned amount.")
             returned.save()
             
             return redirect('returned_details', id=id)
     return render(request, "admin/return_view.html", {'returned':returned,'title':'Returned Order Details'})
 
 
-# Offer
+# category Offer
 
 def category_Offer(request):
     categoryoffer =CategoryOffer.objects.all()
@@ -438,6 +443,82 @@ def add_category_Offer(request):
     else:
         return render(request,'admin/admin_categoryoffer.html',{'category':category})
 
+
+def edit_category_offer(request, offer_id):
+    category_offer = get_object_or_404(CategoryOffer, id=offer_id)
+    categories = Category.objects.exclude(active=False)
+
+    if request.method == 'POST':
+        category = request.POST.get('category')
+        percent_offer = request.POST.get('percent_offer')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        
+        category_offer.category_id = category
+        category_offer.percent_offer = percent_offer
+        category_offer.start_date = start_date
+        category_offer.end_date = end_date
+        category_offer.save()
+
+        return redirect('category_Offer')
+    else:
+        return render(request, 'admin/edit_category_offer.html', {'category_offer': category_offer, 'categories': categories})
+
+def delete_category_Offer(request,offer_id):
+    category_offer = get_object_or_404(CategoryOffer, id=offer_id)
+    category_offer.delete()
+    return redirect('category_Offer')
+
+# product Offer
+
+def product_Offer(request):
+    productoffer =ProductOffer.objects.all()
+    product=Product.objects.exclude(active=False)
+    return render(request,'admin/admin_productoffer.html',{'title':'Product Offer','productoffer':productoffer,'product':product})
+
+def add_product_Offer(request):
+    product=Product.objects.exclude(active=False)
+    if request.method == 'POST':
+        product = request.POST.get('product')
+        percent_offer = request.POST.get('percent_offer')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        
+        ProductOffer.objects.create(
+            product_id=product,
+            percent_offer=percent_offer,
+            start_date=start_date,
+            end_date=end_date
+        )
+        return redirect('product_Offer')
+    else:
+        return render(request,'admin/admin_productoffer.html',{'product':product})
+
+
+def edit_product_offer(request, offer_id):
+    product_offer = get_object_or_404(ProductOffer, id=offer_id)
+    product = Product.objects.exclude(active=False)
+
+    if request.method == 'POST':
+        product = request.POST.get('product')
+        percent_offer = request.POST.get('percent_offer')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        
+        product_offer.product_id = product
+        product_offer.percent_offer = percent_offer
+        product_offer.start_date = start_date
+        product_offer.end_date = end_date
+        product_offer.save()
+
+        return redirect('product_Offer')
+    else:
+        return render(request, 'admin/edit_product_offer.html', {'title':'Edit Product Offer','product_Offer': product_offer, 'product': product})
+
+def delete_product_Offer(request,offer_id):
+    product_Offer = get_object_or_404(ProductOffer, id=offer_id)
+    product_Offer.delete()
+    return redirect('product_Offer')
 
 # Salesreport
 
@@ -564,3 +645,83 @@ def generate_sales_report_pdf(order, total_sales, order_items, item_quantity_sol
     pdf = buffer.getvalue()
     buffer.close()
     return pdf
+
+
+# # Banner
+
+# def admin_banner(request):
+#     if request.user.is_superuser:
+#         banners = Banner.objects.all()
+#         return render(request, 'admin/admin_banner.html', {'banners': banners, 'title': 'Banner'})
+#     else:
+#         return HttpResponseForbidden("Permission Denied: Superadmin required")
+
+# def admin_addbanner(request):
+#     # Assuming 'brand' and 'category' need to be passed into the context
+#     context = {
+#         'brand': 'YourBrand',  # Replace with actual brand data
+#         'category': 'YourCategory',  # Replace with actual category data
+#         'title': 'Add Banner'
+#     }
+#     return render(request, 'admin/add_banner.html', context)
+
+# def add_bannerperform(request):
+#     if request.method == "POST":
+#         bimg = request.FILES.get('bimg')
+#         title = request.POST.get('title')
+#         text = request.POST.get('text')
+#         link = request.POST.get('link')
+#         is_active = request.POST.get('is_active')
+#         start_date = request.POST.get('start_date')
+#         end_date = request.POST.get('end_date')
+        
+#         Banner.objects.create(bimg=bimg, title=title, text=text, link=link, is_active=is_active,
+#                               start_date=start_date, end_date=end_date)
+#         return redirect('admin_banner')
+#     else:
+#         return redirect('admin_banner')
+
+# def admin_bannerview(request, id):
+#     banner = get_object_or_404(Banner, id=id)
+#     context = {
+#         'banner': banner,
+#         'title': 'View Banner',
+#     }
+#     return render(request, 'admin/admin_bannerview.html', context)
+
+# def edit_banner(request, id):
+#     banner = get_object_or_404(Banner, id=id)
+#     context = {
+#         'banner': banner,
+#         'title': 'Edit Banner'
+#     }
+#     return render(request, 'admin/edit_banner.html', context)
+
+# def edit_bannerperform(request, id):
+#     banner = get_object_or_404(Banner, id=id)
+#     if request.method == "POST":
+#         bimg = request.FILES.get('bimg')
+#         title = request.POST.get('title')
+#         text = request.POST.get('text')
+#         link = request.POST.get('link')
+#         is_active = request.POST.get('is_active')
+#         start_date = request.POST.get('start_date')
+#         end_date = request.POST.get('end_date')
+
+#         banner.bimg = bimg
+#         banner.title = title
+#         banner.text = text
+#         banner.link = link
+#         banner.is_active = is_active
+#         banner.start_date = start_date
+#         banner.end_date = end_date
+#         banner.save()
+#         return redirect('admin_banner')
+#     else:
+#         return redirect('admin_banner_view', id=id)
+
+# def banner_active(request, id):
+#     banner = get_object_or_404(Banner, id=id)
+#     banner.is_active = not banner.is_active
+#     banner.save()
+#     return redirect('admin_banner')

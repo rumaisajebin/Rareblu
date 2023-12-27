@@ -1,0 +1,84 @@
+{% extends 'admin/admin.html' %}
+{% block main %}
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="category" class="form-label">Category:</label>
+        <select name="category" id="category" class="form-select">
+            {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if category_offer.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="percent_offer" class="form-label">Percent Offer:</label>
+        <input type="text" class="form-control" name="percent_offer" value="{{ category_offer.percent_offer }}">
+        <span id="percentOfferError" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="start_date">Start Date:</label>
+        <input type="date" name="start_date"
+            value="{% if category_offer.start_date %}{{ category_offer.start_date|date:'Y-m-d' }}{% endif %}"
+            class="form-control">
+        <span id="startDateError" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label for="end_date">End Date:</label>
+        <input type="date" name="end_date"
+            value="{% if category_offer.end_date %}{{ category_offer.end_date|date:'Y-m-d' }}{% endif %}"
+            class="form-control">
+        <span id="endDateError" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form[method="post"]');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const percentOfferInput = document.querySelector('input[name="percent_offer"]');
+            const start_dateInput = document.querySelector('input[name="start_date"]');
+            const end_dateInput = document.querySelector('input[name="end_date"]');
+            const percentOfferError = document.getElementById('percentOfferError');
+            const startDateError = document.getElementById('startDateError');
+            const endDateError = document.getElementById('endDateError');
+
+            // Resetting previous error messages
+            percentOfferError.textContent = '';
+            startDateError.textContent = '';
+            endDateError.textContent = '';
+
+            // Validating percent offer
+            const percentOfferValue = parseFloat(percentOfferInput.value);
+            if (percentOfferValue < 0 || percentOfferValue > 100 || isNaN(percentOfferValue)) {
+                percentOfferError.textContent = 'Percent offer must be a number between 0 and 100';
+                return;
+            }
+
+            // Validating start date
+            const startDateValue = new Date(start_dateInput.value);
+            const currentDate = new Date();
+            if (startDateValue >= currentDate) {
+                startDateError.textContent = 'Start date must be in the past';
+                return;
+            }
+
+            // Validating end date
+            const endDateValue = new Date(end_dateInput.value);
+            if (endDateValue <= startDateValue) {
+                endDateError.textContent = 'End date should be greater than the start date';
+                return;
+            }
+
+            // Proceed with form submission if all validations pass
+            form.submit();
+        });
+    });
+</script>
+{% endblock main %}

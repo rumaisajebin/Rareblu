@@ -1,30 +1,122 @@
-
 {% extends 'admin/admin.html' %}
 {% block main %}
-<div class="row">
-    <div class="col-md-3">
-        <div class="card">
-            <div class="card-body text-center">
-                <h5 class="card-title"><i class="fa-solid fa-users" style="color: #121825;"></i>Customers</h5>
-                <p class="card-text">{{ncustomer}}</p>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Customers</h5>
+                    <p class="card-text">{{ ncustomer }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Orders</h5>
+                    <p class="card-text">{{ norder }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Products</h5>
+                    <p class="card-text">{{ nproduct }}</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card">
-            <div class="card-body text-center">
-                <h5 class="card-title">Products</h5>
-                <p class="card-text">{{nproduct}}</p>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <canvas id="salesChart" style="min-height: 50px;"></canvas>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card">
-            <div class="card-body text-center">
-                <h5 class="card-title">Orders</h5>
-                <p class="card-text"> {{norder}} </p>
+        <div class="col-md-12 mt-3">
+            <div class="card">
+                <div class="card-body">
+                    <ul class="legend">
+                        <li><span class="red"></span>Daily Sales: {{ sales_per_day }}</li>
+                        <li><span class="green"></span>Weekly Sales: {{ sales_per_week }}</li>
+                        <li><span class="blue"></span>Yearly Sales: {{ sales_per_year }}</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const xValues = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+
+    new Chart("salesChart", {
+        type: "line",
+        data: {
+            labels: xValues,
+            datasets: [
+                {
+                    label: 'Daily Sales',
+                    data: [860, 1140, 1060, 1060, 1070, 1110, 1330, 2210, 7830, 2478],
+                    borderColor: "red",
+                    fill: false
+                },
+                {
+                    label: 'Weekly Sales',
+                    data: [1600, 1700, 1700, 1900, 2000, 2700, 4000, 5000, 6000, 7000],
+                    borderColor: "green",
+                    fill: false
+                },
+                {
+                    label: 'Monthly Sales',
+                    data: [300, 700, 2000, 5000, 6000, 4000, 2000, 1000, 200, 100],
+                    borderColor: "blue",
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            legend: { display: false }
+        }
+    });
+</script>
+
+<style>
+    .legend {
+        list-style: none;
+        padding-left: 0;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .legend li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .legend li span {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        margin-right: 10px;
+        border-radius: 50%;
+    }
+
+    .legend li .red {
+        background-color: red;
+    }
+
+    .legend li .green {
+        background-color: green;
+    }
+
+    .legend li .blue {
+        background-color: blue;
+    }
+</style>
+
+
 {% endblock main%}

@@ -6,17 +6,15 @@
         <div class="d-flex align-items-center p-2">
             <a href="{% url 'update_cart' item.product.id 'decrement' %}" class="btn btn-outline-dark p-1 px-3">-</a>
             <p class="fw-bold m-0 px-2 p-1">{{ item.quantity }}</p>
-            <a href="{% url 'update_cart' item.product.id 'increment' %}" class="btn btn-outline-dark p-1 px-3">+</a>
+            {% if item.quantity < item.product.Stock %}
+                <a href="{% url 'update_cart' item.product.id 'increment' %}" class="btn btn-outline-dark p-1 px-3">+</a>
+            {% else %}
+                <button class="btn btn-outline-dark p-1 px-3" disabled>+</button>
+            {% endif %}
         </div>
     </div>
     <p class="fw-bold text-secondary m-0">${{ item.total_price }}</p>
-    <!-- {% if item.category_offers %}
-        <p>Available Offers:</p>
-        <ul>
-            {% for offer in item.category_offers %}
-                <li>{{ offer.percent_offer }}% off - Valid until {{ offer.end_date }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %} -->
+    <a href="{% url 'remove_item' item.id %}" class="btn btn-light">Remove</a>
 </div>
 {% endif %}
+    

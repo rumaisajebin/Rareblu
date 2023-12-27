@@ -31,30 +31,56 @@
       </select>
     </div>
     <br>
-    <div class="form-group">
-      <label for="image1">Choose product image1</label>
-      <input type="file" class="form-control -file" id="image1" name="img1">
-      <span id="image1Error" class="text-danger"></span>
+    <!-- Image 1 -->
+    <div class="form-group row align-items-center">
+      <label for="image1" class="col-sm-2 col-form-label">Choose product image1</label>
+      <div class="col-sm-4">
+        <input type="file" class="form-control-file" id="image1" name="img1" onchange="displaySelectedFile('image1', 'image1Preview')">
+        <span id="image1Error" class="text-danger"></span>
+      </div>
+      <div class="col-sm-auto">
+        <img id="image1Preview" src="#" alt="Product Image 1" width="100" style="display: none;">
+      </div>
     </div>
     <br>
-    <div class="form-group">
-      <label for="image2">Choose product image2</label>
-      <input type="file" class="form-control -file" id="image2" name="img2">
-      <span id="image2Error" class="text-danger"></span>
-    </div>
-    <br>
-    <div class="form-group">
-      <label for="image3">Choose product image3</label>
-      <input type="file" class="form-control -file" id="image3" name="img3">
-      <span id="image3Error" class="text-danger"></span>
-    </div>
-    <br>
-    <div class="form-group">
-      <label for="image4">Choose product image4</label>
-      <input type="file" class="form-control -file" id="image4" name="img4">
-      <span id="image4Error" class="text-danger"></span>
-    </div>
 
+    <!-- Image 2 -->
+    <div class="form-group row align-items-center">
+      <label for="image2" class="col-sm-2 col-form-label">Choose product image2</label>
+      <div class="col-sm-4">
+        <input type="file" class="form-control-file" id="image2" name="img2" onchange="displaySelectedFile('image2', 'image2Preview')">
+        <span id="image2Error" class="text-danger"></span>
+      </div>
+      <div class="col-sm-auto">
+        <img id="image2Preview" src="#" alt="Product Image 2" width="100" style="display: none;">
+      </div>
+    </div>
+    <br>
+
+    <!-- Image 3 -->
+    <div class="form-group row align-items-center">
+      <label for="image3" class="col-sm-2 col-form-label">Choose product image3</label>
+      <div class="col-sm-4">
+        <input type="file" class="form-control-file" id="image3" name="img3" onchange="displaySelectedFile('image3', 'image3Preview')">
+        <span id="image3Error" class="text-danger"></span>
+      </div>
+      <div class="col-sm-auto">
+        <img id="image3Preview" src="#" alt="Product Image 3" width="100" style="display: none;">
+      </div>
+    </div>
+    <br>
+
+    <!-- Image 4 -->
+    <div class="form-group row align-items-center">
+      <label for="image4" class="col-sm-2 col-form-label">Choose product image4</label>
+      <div class="col-sm-4">
+        <input type="file" class="form-control-file" id="image4" name="img4" onchange="displaySelectedFile('image4', 'image4Preview')">
+        <span id="image4Error" class="text-danger"></span>
+      </div>
+      <div class="col-sm-auto">
+        <img id="image4Preview" src="#" alt="Product Image 4" width="100" style="display: none;">
+      </div>
+    </div>
     <br>
     <div class="form-group">
       <label for="exampleFormControlTextarea1">Description</label>
@@ -190,5 +216,19 @@
     return true;
   }
 </script>
+<script>
+  function displaySelectedFile(inputId, imagePreviewId) {
+    const input = document.getElementById(inputId);
+    const imgPreview = document.getElementById(imagePreviewId);
 
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        imgPreview.src = e.target.result;
+        imgPreview.style.display = 'block';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+</script>
 {% endblock main %}

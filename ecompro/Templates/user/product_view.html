@@ -5,19 +5,24 @@
         <!-- Main Image -->
         <div class="col-md-4">
             <div class="card">
-                <img src="{{ product.img1.url }}" class="card-img main-img" alt="Main Image"
-                    style="height: 420px; width: 430px;">
+                <div id="img-div" style="position: relative; overflow: hidden;">
+                    <img src="{{ product.img1.url }}" class="card-img main-img" alt="Main Image"
+                        style="height: 420px; width: 430px;">
+                </div>
                 <hr>
                 <div class="row">
                     {% for image_field in image_fields %}
+                    {% if image_field %}
                     <div class="col-md-3">
                         <img src="{{ image_field.url }}" alt="Product Image" data-main-img="{{ image_field.url }}"
                             class="thumbnail-img" style="width: 100%; cursor: pointer;">
                     </div>
+                    {% endif %}
                     {% endfor %}
                 </div>
             </div>
         </div>
+         
         <!-- Product Details -->
         <div class="col-md-8 my-5">
             <div class="card-body">
@@ -45,15 +50,28 @@
                             </td>
                         </tr>
                         {% endif %}
+                        {% if product_offer %}
+                        <tr>
+                            <td><b>Product Offer</b></td>
+                            <td>
+                                    {% for offer in product_offer %}
+                                        {{ offer.percent_offer }}% offer valid from {{ offer.start_date }} to {{ offer.end_date }}
+                                    {% endfor %}
+                                {% else %}
+                                    <p>No offers available for this product</p>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        <tr>
                         <tr>
                             <td><b>Price</b></td>
                             <td>
-                                {% if discounted_price %}
-                                <p>Original Price : ₹ {{ original_price }}</p>
-                                <p>Offer Price : ₹ {{ discounted_price }}</p>
+                                {% if product.get_discounted_price %}
+                                <p>Original Price: ₹ {{ product.price }}</p>
+                                <p>Offer Price: ₹ {{ product.get_discounted_price }}</p>
                                 {% else %}
-                                <p>Price : ₹ {{ original_price }}</p>
-                                <p>No offer available </p>
+                                <p>Price: ₹ {{ product.price }}</p>
+                                <p>No offer</p>
                                 {% endif %}
                             </td>
                         </tr>
@@ -83,25 +101,42 @@
         </div>
     </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/@sai1253/driftjs@1.0.0/dist/Drift.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        
 <script>
-    const thumbnails = document.querySelectorAll('.thumbnail-img');
-    const mainImg = document.querySelector('.main-img');
+document.addEventListener("DOMContentLoaded", function () {
+    const container = document.getElementById("img-div");
+    const img = document.querySelector(".main-img");
+
+    container.addEventListener("mousemove", onZoom);
+    container.addEventListener("mouseover", onZoom);
+    container.addEventListener("mouseleave", offZoom);
+
+    function onZoom(e) {
+        const x = e.clientX - container.getBoundingClientRect().left;
+        const y = e.clientY - container.getBoundingClientRect().top;
+
+        img.style.transformOrigin = `${x}px ${y}px`;
+        img.style.transform = "scale(1.5)";
+    }
+
+    function offZoom(e) {
+        img.style.transformOrigin = 'center center';
+        img.style.transform = "scale(1)";
+    }
+
+    const thumbnails = document.querySelectorAll(".thumbnail-img");
 
     thumbnails.forEach(thumbnail => {
-        thumbnail.addEventListener('click', () => {
-            const newImgSrc = thumbnail.getAttribute('data-main-img');
-            mainImg.src = newImgSrc;
-            // Activate Drift for the updated main image
-            new Drift(mainImg, {
-                paneContainer: document.querySelector('.card'),
-                inlinePane: 900,
-                inlineOffsetY: -85,
-                containInline: true,
-                hoverBoundingBox: true
-            });
+        thumbnail.addEventListener("click", function () {
+            const imageUrl = this.dataset.mainImg;
+            updateMainImage(imageUrl);
         });
     });
+
+    function updateMainImage(imageUrl) {
+        img.src = imageUrl;
+    }
+});
 </script>
 {% endblock main %}

@@ -54,28 +54,20 @@ def product(request):
     }
     return render(request,'user/product_listing.html', context)
 
+
 def product_view(request,id):
     product =Product.objects.get(id=id)
     image_fields = [product.img1, product.img2, product.img3, product.img4]
     category_offers = CategoryOffer.objects.filter(category=product.Category, start_date__lte=date.today(), end_date__gte=date.today())
-    
-    original_price = product.price  # Store original price
-    
-    if category_offers.exists():
-        offer = category_offers.first()  # Assuming you want to apply the first offer found
-        discount = offer.percent_offer
-        discounted_price = Decimal(product.price) * (1 - discount / 100)  # Calculate discounted price
-    else:
-        discounted_price = None  # Set discounted price as None if no offer exists
-    
+    product_offer = ProductOffer.objects.filter(product=product, start_date__lte=date.today(), end_date__gte=date.today())
+    product.get_discounted_price = product.get_discounted_price() 
+
     context= {
         'product': product,
         'image_fields':image_fields,
-        'original_price': original_price,
-        'discounted_price': discounted_price,
+        'product_offer':product_offer,
         'category_offers': category_offers
     }
-    
     return render(request,'user/product_view.html',context)    
 
 
@@ -169,7 +161,7 @@ def cart(request):
     coupon_form= CouponForm(request.POST)
     coupon=""
     request.session['discount_price'] = int(0)
-    request.session['total_price'] =  total_cart_price
+    request.session['total_price'] =  float(total_cart_price)
     if coupon_form.is_valid():
         code = coupon_form.cleaned_data['code']
         coupon = Coupon.objects.filter(coupon_code=code, active=True)
@@ -196,31 +188,38 @@ def cart(request):
 
 
 def update_cart(request, id, action):
-    
-    cart = get_object_or_404(CartItem, product=id)
-    if action == 'increment':
-        cart.quantity += 1
-    elif action == 'decrement':
-        cart.quantity -= 1
-    cart.save()
-    
-    if cart.quantity == 0:
-        print('cartdelete')
-        cart.delete()
+    cart_item = get_object_or_404(CartItem, user=request.user, product=id)
 
+    if action == 'increment':
+        cart_item.quantity += 1
+        cart_item.save()
+    elif action == 'decrement':
+        cart_item.quantity -= 1
+        cart_item.save()
+
+    if cart_item.quantity > cart_item.product.Stock:
+        messages.error(request, f'{cart_item.product.Product_Name} is out of stock.')
+        return redirect('cart')
+    
+    if not cart_item.product.active:
+        messages.error(request, f'{cart_item.product.Product_Name} is inactive.')
+        return redirect('cart')
+
+    if cart_item.quantity == 0:
+        print('cartdelete')
+        cart_item.delete()
+    
     default_url = '/'
     referer = request.META.get('HTTP_REFERER', default_url)
 
-    try:
-        return redirect(referer)
-    except ValueError:
-        return redirect(default_url)
+    return redirect(referer)
 
-# def remove(request,id):
-#     cart = CartItem.objects.get(id=id)
-#     cart.delete()
-#     return redirect(cart)
-
+def remove_item(request,id):
+    product = CartItem.objects.get(id=id)
+    if product:
+        product.delete()
+    return redirect('cart')
+   
 def hx_menu_cart(request):
     return render(request, 'user/menu_cart.html')
 
@@ -385,8 +384,6 @@ def place_order(request):
                     product.Stock -= item.quantity 
                     product.save()
                 cart.delete()
-                # del request.session['total_cart_price']
-                # del request.session['discount_price']
                 return redirect('order_listing')
             else:
                 messages.error(request,'wallet have no much money')
@@ -426,7 +423,7 @@ def place_order(request):
 
 def paymentsuccessful(request,address):
     cart =CartItem.objects.filter(user=request.user)
-    total_cart_price = sum(item.total_price() for item in cart)
+    total_cart_price =  request.session.get('total_price')
     coupon = request.session.get('coupon')
     Applied_coupon.objects.create(user=request.user, coupon=coupon)
     
@@ -493,7 +490,7 @@ def cancel_order(request,order_id):
     order.save()
     if order.billing_status in ['paypal', 'wallet']:
         # Add the amount back to the user's wallet
-        Wallet.objects.create(user=order.user, amount=order.total_paid, order=order, balance_type=Wallet.CREDIT)
+        Wallet.objects.create(user=order.user, amount=order.total_paid, order=order, balance_type=Wallet.CREDIT,transaction_description="Cancelled amount.")
     if order.status == 'cancelled':
         order_items = OrderItem.objects.filter(order=order)
         for item in order_items:
@@ -530,11 +527,12 @@ def wallet(request):
 
 
 # Wishlist
-
+@login_required
 def wishlist(request):
     wish = Wishlist.objects.filter(user=request.user)
     return render(request,'user/wishlist.html',{'wish':wish})
 
+@login_required
 def add_to_wishlist(request, id):
     product = get_object_or_404(Product, id=id)
     wishlist_item, created = Wishlist.objects.get_or_create(product=product, user=request.user)
@@ -571,4 +569,4 @@ def remove_from_cart(request, id):
     else:
         messages.error(request, "You don't have permission to remove this item from the cart.")
     
-    return redirect('cart')  # Assuming 'cart' is the name of the cart view
+    return redirect('cart')  

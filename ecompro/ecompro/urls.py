@@ -21,10 +21,11 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('account.urls')),
+    path('',include('auth_app.urls')),
     path('',include('admin_side.urls')),
     path('',include('cart.urls')),
     path('', include("paypal.standard.ipn.urls")),
+    # path('account/', include("allauth.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

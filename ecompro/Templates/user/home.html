@@ -7,8 +7,8 @@
       {% for product in product %}
       <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
         <div class="card h-100">
-          <img src="{{ product.img1.url }}" class="card-img-top" style="height: 280px; width: 100%;"
-            alt="{{ product.Product_Name }}">
+          <img src="{{ product.img1.url }}" class="card-img-top product-image" style="height: 280px; width: 100%;"
+            alt="{{ product.Product_Name }}" data-product-id="{{ product.id }}">
           <div class="card-body">
             <h5 class="card-title">{{ product.Product_Name }}</h5>
             <p class="card-text"><strong>Brand:</strong> {{ product.Brand }}</p>
@@ -27,4 +27,20 @@
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const productImages = document.querySelectorAll('.product-image');
+    productImages.forEach(image => {
+      let timer;
+      image.addEventListener('click', function() {
+        clearTimeout(timer);
+      });
+      image.addEventListener('dblclick', function() {
+        const productId = this.getAttribute('data-product-id');
+        window.location.href = `/product_view/${productId}`;
+      });
+    });
+  });
+</script>
 {% endblock main %}

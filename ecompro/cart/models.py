@@ -27,12 +27,17 @@ class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     quantity = models.IntegerField(default=1)
-    
+    discounted_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Add this field for discounted price
     def __str__(self):
         return self.product.Product_Name
     
     def total_price(self):
-        return self.product.price * self.quantity
+        discounted_price = self.product.get_discounted_price()
+
+        if discounted_price is not None:
+            return discounted_price * self.quantity
+        else:
+            return self.product.price * self.quantity
     
     
   
@@ -117,7 +122,8 @@ class Wallet(models.Model):
     amount = models.IntegerField(default=0)
     balance_type = models.CharField(max_length=15, choices=BALANCE_TYPE, default=CREDIT)
     balance_returned = models.DateTimeField(auto_now_add=True)
-
+    transaction_description = models.TextField(blank=True, null=True)
+     
     def _str_(self):
         return f"{self.user.username}'s Wallet"
 

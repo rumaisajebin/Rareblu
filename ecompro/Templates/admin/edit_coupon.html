@@ -14,7 +14,7 @@
         
         <div class="mb-3">
             <label for="expiry_date" class="form-label">Expiry Date</label>
-            <input type="date" class="form-control" id="expiry_date" name="expiry_date" value="{{ coupon.expiry_date }}" required>
+            <input type="date" class="form-control" id="expiry_date" name="expiry_date" value="{% if coupon.expiry_date %}{{ coupon.expiry_date|date:'Y-m-d' }}{% endif %}" required>
             <span id="expiryDateError" class="text-danger"></span>
         </div>
       
@@ -36,11 +36,11 @@
         var codeInput = document.getElementById('code');
         var expiryDateInput = document.getElementById('expiry_date');
         var discountPriceInput = document.getElementById('discount_price');
-
+    
         var codeError = document.getElementById('codeError');
         var expiryDateError = document.getElementById('expiryDateError');
         var discountPriceError = document.getElementById('discountPriceError');
-
+    
         // Code validation
         if (codeInput.value.trim() === '') {
             codeError.textContent = 'Coupon code cannot be empty.';
@@ -48,15 +48,31 @@
         } else {
             codeError.textContent = '';
         }
-
+    
         // Expiry Date validation
-        if (expiryDateInput.value.trim() === '') {
+        var expiryDateValue = expiryDateInput.value.trim();
+        if (expiryDateValue === '') {
             expiryDateError.textContent = 'Expiry date cannot be empty.';
             return false;
         } else {
-            expiryDateError.textContent = '';
+            var validDate = isValidDate(expiryDateValue);
+            if (!validDate) {
+                expiryDateError.textContent = 'Enter a valid date in YYYY-MM-DD format.';
+                return false;
+            } else {
+                expiryDateError.textContent = '';
+    
+                // Check if expiry date is not a past date
+                var today = new Date().toISOString().split('T')[0];
+                if (expiryDateValue < today) {
+                    expiryDateError.textContent = 'Expiry date cannot be a past date.';
+                    return false;
+                } else {
+                    expiryDateError.textContent = '';
+                }
+            }
         }
-
+    
         // Discount Price validation
         if (discountPriceInput.value.trim() === '') {
             discountPriceError.textContent = 'Discount price cannot be empty.';
@@ -64,9 +80,15 @@
         } else {
             discountPriceError.textContent = '';
         }
-
+    
         return true;
     }
+    
+    function isValidDate(dateString) {
+        var regEx = /^\d{4}-\d{2}-\d{2}$/;
+        return dateString.match(regEx) !== null;
+    }
+    
 </script>
 
 {% endblock main %}
