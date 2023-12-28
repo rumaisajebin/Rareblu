@@ -99,11 +99,11 @@ WSGI_APPLICATION = 'ecompro.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dataecompro',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '5433',
+        'NAME': 'rareblu',
+        'USER': 'admin123',
+        'PASSWORD': '5_Appletree',
+        'HOST': 'rareblu.cr0kigmgea4i.eu-north-1.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
@@ -173,3 +173,14 @@ EMAIL_HOST_PASSWORD = 'csqo yior dtey iffx'
 
 PAYPAL_RECEIVER_EMAIL ='rareblu@gmail.com'
 PAYPAL_TEST = True
+
+
+# AWS_ACCESS_KEY_ID = 'AKIAYTXBNQZA7CD5CC7G '
+# AWS_SECRET_ACCESS_KEY = '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'
+# AWS_STORAGE_BUCKET_NAME = 'rareblu'
+# AWS_S3_SIGNATURE_NAME = 's3v4',
+# AWS_S3_REGION_NAME = '	Europe (Stockholm) eu-north-1'
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL =  None
+# AWS_S3_VERITY = True
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
