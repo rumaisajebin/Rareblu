@@ -99,11 +99,11 @@ WSGI_APPLICATION = 'ecompro.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dataecompro',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '5433',
+        'NAME': 'rareblu',
+        'USER': 'admin123',
+        'PASSWORD': '5_Appletree',
+        'HOST': 'rareblu.cr0kigmgea4i.eu-north-1.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
